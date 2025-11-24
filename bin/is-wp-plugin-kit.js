@@ -60,7 +60,11 @@ if (cmd === "compile-mo") {
 // ---------------------------
 if (cmd === "dev") {
   execSync(
-    "npm-run-all --parallel dev:vite watch:lint watch:stylelint watch:mo",
+    "concurrently -k " +
+      '"vite" ' +
+      "\"chokidar 'assets/src/ts/**/*.ts' -c 'oxlint assets/src/ts'\" " +
+      "\"chokidar 'assets/src/scss/**/*.scss' -c 'stylelint \\\"assets/src/scss/**/*.scss\\\" --fix'\" " +
+      "\"chokidar 'assets/src/l10n/**/*.po' -c 'is-wp-plugin-kit compile-mo'\"",
     { stdio: "inherit" }
   );
   process.exit(0);
