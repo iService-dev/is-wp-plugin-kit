@@ -8,7 +8,9 @@
     "./vite": {
       "types": "./vite/index.d.ts",
       "default": "./vite/index.js"
-    }
+    },
+    "./files/tsconfig.json": "./files/tsconfig.json",
+    "./files/*": "./files/*"
   },
   "files": [
     "vite",
