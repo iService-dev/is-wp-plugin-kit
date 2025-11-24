@@ -1,3 +1,11 @@
-import { UserConfig } from 'vite';
+import { UserConfig, ServerOptions } from "vite";
 
-export function wpPluginKitVite(config?: UserConfig): UserConfig;
+export interface KitOptions extends UserConfig {
+  port?: number;
+  outDir?: string;
+  staticCopyTargets?: any;
+  cwd?: string;
+  server?: ServerOptions & { port?: number };
+}
+
+export function wpPluginKitVite(options?: KitOptions): UserConfig;
