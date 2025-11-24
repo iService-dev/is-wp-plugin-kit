@@ -4,6 +4,12 @@
   "description": "A toolkit for WordPress plugin development with Vite, TypeScript, and modern build tools",
   "type": "module",
   "main": "vite/index.js",
+  "exports": {
+    "./vite": {
+      "types": "./vite/index.d.ts",
+      "default": "./vite/index.js"
+    }
+  },
   "files": [
     "vite",
     "files",

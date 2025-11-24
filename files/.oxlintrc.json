@@ -1,0 +1,19 @@
+{
+	"ignore": [
+		"assets/src/legacy/**/*"
+	],
+	"rules": {
+		"no-alert": "error",
+		"oxc/approx-constant": "error",
+		"no-unused-vars": "warn",
+		"no-duplicate-imports": "error",
+		"no-unreachable": "error",
+		"no-empty": "error",
+		"no-for-loop": "warn",
+		"no-var": "warn",
+		"prefer-const": "warn",
+		"eqeqeq": "warn",
+		"semi": "warn",
+		"no-console": "warn"
+	}
+}

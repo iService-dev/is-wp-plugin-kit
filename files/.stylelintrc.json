@@ -1,0 +1,22 @@
+{
+	"extends": [
+		"stylelint-config-standard-scss"
+	],
+	"plugins": [
+		"stylelint-scss",
+		"stylelint-order"
+	],
+	"rules": {
+		"color-hex-length": "short",
+		"order/properties-alphabetical-order": true,
+		"selector-class-pattern": null,
+		"selector-id-pattern": null,
+		"property-no-deprecated": [true, {"severity": "warning"}],
+		"keyframes-name-pattern": null,
+		"number-max-precision": null,
+		"no-descending-specificity": null,
+		"no-duplicate-selectors": null,
+		"font-family-no-missing-generic-family-keyword": null,
+		"keyframe-block-no-duplicate-selectors": null
+	}
+}

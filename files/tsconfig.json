@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "preserve",
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "verbatimModuleSyntax": true,
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "exactOptionalPropertyTypes": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./assets/src/*"],
+      "@/modules/*": ["./assets/src/ts/modules/*"],
+      "@/types/*": ["./assets/src/ts/types/*"]
+    },
+
+    "types": ["jquery", "node"],
+    "skipLibCheck": true
+  },
+  "include": [
+    "assets/src/**/*.ts",
+    "assets/src/**/*.js",
+    "vite.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "assets/dist"
+  ]
+}
