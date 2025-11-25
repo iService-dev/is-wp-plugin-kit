@@ -1,0 +1,8 @@
+"Project-Id-Version: iService Plugin\n"
+"Last-Translator: iService <support@iservice.at>\n"
+"Language: de_DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid ""
+msgstr ""
