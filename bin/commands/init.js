@@ -1,10 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { copy } from '../utils.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
-const selfPkg = require('../package.json');
+const selfPkg = require('../../package.json');
 
 const toolkitVersion = `^${selfPkg.version}`;
 

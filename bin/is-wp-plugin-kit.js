@@ -31,4 +31,3 @@ is-wp-plugin-kit – available commands:
   compile-mo       → Convert .po → .mo
 `);
 }
-
