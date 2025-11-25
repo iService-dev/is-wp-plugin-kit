@@ -126,7 +126,6 @@ export default wpPluginKitVite({
 		'assets/src/l10n',
 		'assets/src/legacy/js',
 		'assets/src/legacy/css',
-		'assets/dist',
 		'includes/lib/Admin',
 		'includes/lib/Core',
 		'includes/lib/Frontend',
