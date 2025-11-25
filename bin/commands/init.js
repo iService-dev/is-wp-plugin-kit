@@ -130,7 +130,6 @@ export default wpPluginKitVite({
 		'includes/lib/Admin',
 		'includes/lib/Core',
 		'includes/lib/Frontend',
-		'languages',
 	];
 
 	// Ordner die kein .gitkeep brauchen (bekommen andere Dateien)
