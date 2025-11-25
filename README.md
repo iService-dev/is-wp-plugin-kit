@@ -2,113 +2,99 @@
 
 A toolkit for WordPress plugin development with Vite, TypeScript, and modern build tools.
 
-## Features
+## Quick Start
 
-- 🚀 **Vite Integration**: Fast development with HMR support
-- 📦 **TypeScript Support**: Full TypeScript configuration for WordPress plugins
-- 🎨 **SCSS Processing**: Modern CSS workflow with PostCSS and Autoprefixer
-- 🔍 **Linting**: Pre-configured OXLint and Stylelint rules
-- 🌍 **i18n Support**: Compile `.po` files to `.mo` for WordPress localization
-- 📁 **Smart Asset Handling**: Automatic processing of JS, CSS, images, and fonts
-
-## Installation
+### 1. Initialize a New Plugin
 
 ```bash
-npm install --save-dev @iservice-dev/is-wp-plugin-kit
+npx @iservice-dev/is-wp-plugin-kit init
 ```
 
-## Usage
+This sets up your complete plugin structure with:
+- Configuration files (`.gitignore`, TypeScript, linting, PostCSS)
+- Folder structure (`assets/`, `includes/`, `languages/`)
+- Template files (`Config.php`, `Plugin.php`, `de_DE.po`)
+- `vite.config.ts` with default settings
 
-### Initialize Your Project
-
-Set up your WordPress plugin with default configuration files:
+### 2. Install Dependencies
 
 ```bash
-npx is-wp-plugin-kit init
+npm install
 ```
 
-This creates the following files in your project root:
-- `.gitignore` - WordPress-specific ignore patterns
-- `oxlintrc.json` - JavaScript/TypeScript linting configuration
-- `stylelintrc.json` - CSS/SCSS linting configuration
-- `postcss.config.cjs` - PostCSS configuration with Autoprefixer
-- `tsconfig.json` - TypeScript configuration optimized for WordPress
+### 3. Start Development
 
-### Vite Configuration
+```bash
+npm run dev
+```
 
-In your `vite.config.js`:
+## Configuration
 
-```javascript
-import { defineConfig } from 'vite';
-import wpPluginKit from '@iservice-dev/is-wp-plugin-kit';
+### Port Settings
 
-export default defineConfig({
-  plugins: [
-    wpPluginKit({
-      entry: 'src/main.ts', // Your main entry file
-      outDir: 'dist',        // Output directory
-    })
-  ]
+If you need a different port for general development, update both:
+
+**`vite.config.ts`:**
+```typescript
+export default wpPluginKitVite({
+  port: 5500  // Change this
 });
 ```
 
-### Compile Translation Files
-
-Compile `.po` files to `.mo` for WordPress i18n:
-
-```bash
-npx is-wp-plugin-kit compile-mo
+**`includes/lib/Core/Config.php`:**
+```php
+$this->vitePort = 5500;  // Change this
 ```
 
-This automatically finds and compiles all `.po` files in your `languages/` directory.
+### PHP Customization
+
+All customization points in the PHP template files are marked with `TODO` comments. Check:
+- `includes/lib/Core/Plugin.php`
+- `includes/lib/Core/Config.php`
+
+## Available Commands
+
+```bash
+npm run dev        # Development mode with watchers
+npm run build      # Production build
+```
 
 ## What's Included
 
-### Vite Plugin
-
-The plugin automatically handles:
-- **Entry point compilation** (TypeScript/JavaScript)
-- **SCSS processing** with PostCSS
-- **Asset copying** (images, fonts, PHP files)
-- **WordPress-specific optimizations**
-
-### Configuration Files
-
-#### TypeScript (`tsconfig.json`)
-Pre-configured for WordPress development with proper types and module resolution.
-
-#### PostCSS (`postcss.config.cjs`)
-Includes Autoprefixer for automatic vendor prefixing.
-
-#### Linting
-- **OXLint**: Fast JavaScript/TypeScript linting
-- **Stylelint**: CSS/SCSS linting with modern standards
+- **Vite**: Fast development server with HMR
+- **TypeScript**: Full type support for WordPress development
+- **SCSS**: Modern CSS workflow with PostCSS and Autoprefixer
+- **Linting**: OXLint for JS/TS, Stylelint for CSS/SCSS
+- **i18n**: Automatic `.po` to `.mo` compilation
+- **File Watchers**: Auto-lint and compile on file changes
 
 ## Project Structure
 
-Your WordPress plugin should follow this structure:
-
 ```
 your-plugin/
-├── src/
-│   ├── main.ts          # Entry point
-│   ├── styles/          # SCSS files
-│   └── ...
-├── languages/           # Translation files (.po)
-├── dist/                # Built files (auto-generated)
-├── vite.config.js
-└── package.json
+├── assets/
+│   ├── src/
+│   │   ├── ts/          # TypeScript files
+│   │   ├── scss/        # SCSS files
+│   │   ├── images/      # Images
+│   │   ├── fonts/       # Fonts
+│   │   ├── l10n/        # Translation files (.po)
+│   │   └── legacy/      # Legacy JS/CSS
+│   └── dist/            # Built files (auto-generated)
+├── includes/
+│   └── lib/
+│       ├── Core/        # Plugin core classes
+│       ├── Admin/       # Admin classes
+│       └── Frontend/    # Frontend classes
+├── languages/           # Compiled .mo files
+└── vite.config.ts
 ```
 
 ## Requirements
 
 - Node.js 18 or higher
-- Vite 5.x or 6.x (peer dependency)
+- Vite 7.x
 
 ## License
 
 ISC
-
-## Repository
-
-[https://github.com/iservice-dev/is-wp-plugin-kit](https://github.com/iservice-dev/is-wp-plugin-kit)
