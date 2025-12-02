@@ -71,9 +71,13 @@ export function wpPluginKitVite(userOptions = {}) {
       cssCodeSplit: true,
       rollupOptions: {
         input: makeInputs(),
+		external: ['jquery'],
         output: {
           intro: "(function(){",
           outro: "})();",
+		  globals: {
+			jquery: 'jQuery'
+		  },
           entryFileNames: (chunk) =>
             chunk.name.startsWith("js/") ? "[name].js" : "js/[name].js",
           chunkFileNames: "js/[name]-[hash].js",
