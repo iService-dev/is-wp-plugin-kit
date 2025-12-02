@@ -12,8 +12,6 @@ export function wpPluginKitVite(userOptions = {}) {
       [
         "assets/src/ts/*.ts",
         "assets/src/scss/*.scss",
-        "assets/src/legacy/js/*.js",
-        "assets/src/legacy/css/*.css",
       ],
       {
         cwd: userOptions.cwd ?? process.cwd(),
