@@ -61,7 +61,6 @@ export function wpPluginKitVite(userOptions = {}) {
       cors: true,
       hmr: { host: "localhost", protocol: "ws" },
     },
-
     build: {
       outDir: userOptions.outDir ?? "assets/dist",
       assetsDir: "",
@@ -71,12 +70,13 @@ export function wpPluginKitVite(userOptions = {}) {
       cssCodeSplit: true,
       rollupOptions: {
         input: makeInputs(),
-		external: ['jquery'],
+		external: ['jquery', 'select2'],
         output: {
           intro: "(function(){",
           outro: "})();",
 		  globals: {
-			jquery: 'jQuery'
+			jquery: 'jQuery',
+			select2: 'select2'
 		  },
           entryFileNames: (chunk) =>
             chunk.name.startsWith("js/") ? "[name].js" : "js/[name].js",
