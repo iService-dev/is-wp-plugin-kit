@@ -43,6 +43,13 @@ export function wpPluginKitVite(userOptions = {}) {
     { src: "assets/src/legacy/js/*.js", dest: "js" },
   ];
 
+  // Filter out targets where source path doesn't exist or has no files
+  const cwd = userOptions.cwd ?? process.cwd();
+  const validTargets = staticCopyTargets.filter((target) => {
+    const files = fg.sync(target.src, { cwd });
+    return files.length > 0;
+  });
+
   return defineConfig({
     base: "./",
 
@@ -94,7 +101,7 @@ export function wpPluginKitVite(userOptions = {}) {
 
     css: { postcss: "./postcss.config.cjs" },
 
-    plugins: [viteStaticCopy({ targets: staticCopyTargets })],
+    plugins: [viteStaticCopy({ targets: validTargets })],
 
     ...userOptions,
   });
