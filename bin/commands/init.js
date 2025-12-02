@@ -57,7 +57,7 @@ export function runInit() {
 		path.join(root, '.oxlintrc.json'),
 		JSON.stringify(
 			{
-				extends: ['@iservice-dev/is-wp-plugin-kit/files/oxlintrc.json'],
+				extends: ['./node_modules/@iservice-dev/is-wp-plugin-kit/files/oxlintrc.json'],
 			},
 			null,
 			2
