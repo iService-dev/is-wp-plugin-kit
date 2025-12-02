@@ -39,8 +39,8 @@ export function wpPluginKitVite(userOptions = {}) {
   const staticCopyTargets = userOptions.staticCopyTargets ?? [
     { src: "assets/src/images/*", dest: "css/images" },
     { src: "assets/src/fonts/**/*.{eot,woff,woff2,ttf}", dest: "css/fonts" },
-    { src: "assets/src/legacy/css/*.css", dest: "css" },
-    { src: "assets/src/legacy/js/*.js", dest: "js" },
+    { src: "assets/src/legacy/css/**/*.css", dest: "css" },
+    { src: "assets/src/legacy/js/**/*.js", dest: "js" },
   ];
 
   // Filter out targets where source path doesn't exist or has no files
