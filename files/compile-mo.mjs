@@ -6,9 +6,8 @@ import { promisify } from 'node:util'
 import fg from 'fast-glob'
 
 const execFileP = promisify(execFile);
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.resolve(__dirname, '..');
 
+const root = process.cwd();
 
 const srcDir = path.join(root, 'assets', 'src', 'l10n');
 const outDir = path.join(root, 'languages');
@@ -17,6 +16,11 @@ const pluginName = path.basename(root);
 
 await fs.mkdir(outDir, { recursive: true });
 const poFiles = await fg('**/*.po', { cwd: srcDir });
+
+if (poFiles.length === 0) {
+  console.log('⚠ No .po files found in', srcDir);
+  process.exit(0);
+}
 
 for (const rel of poFiles) {
   const inPath = path.join(srcDir, rel)
@@ -35,3 +39,5 @@ for (const rel of poFiles) {
 
   console.log(`✔ ${rel} -> ${path.relative(root, outPath)} (with prefix ${pluginName}-)`)
 }
+
+console.log(`\n✅ Compiled ${poFiles.length} translation file(s)`);
