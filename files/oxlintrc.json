@@ -1,5 +1,5 @@
 {
-	"ignore": [
+	"ignorePatterns": [
 		"assets/src/legacy/**/*"
 	],
 	"rules": {
