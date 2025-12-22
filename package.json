@@ -1,6 +1,6 @@
 {
   "name": "@iservice-dev/is-wp-plugin-kit",
-  "version": "1.7.3",
+  "version": "1.7.4",
   "description": "A toolkit for WordPress plugin development with Vite, TypeScript, and modern build tools",
   "type": "module",
   "main": "vite/index.js",
