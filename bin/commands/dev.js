@@ -1,7 +1,8 @@
 import { execSync } from 'node:child_process';
-import { globSync } from 'glob';
 
-export function runDev() {
+export async function runDev() {
+	const { globSync } = await import('glob');
+
 	const commands = ['"vite"'];
 
 	const tsFiles = globSync('assets/src/ts/**/*.ts');
@@ -11,7 +12,9 @@ export function runDev() {
 
 	const scssFiles = globSync('assets/src/scss/**/*.scss');
 	if (scssFiles.length > 0) {
-		commands.push("\"chokidar 'assets/src/scss/**/*.scss' -c 'stylelint \\\"assets/src/scss/**/*.scss\\\" --fix'\"");
+		commands.push(
+			'"chokidar \'assets/src/scss/**/*.scss\' -c \'stylelint \\"assets/src/scss/**/*.scss\\" --fix\'"'
+		);
 	}
 	commands.push("\"chokidar 'assets/src/l10n/**/*.po' -c 'is-wp-plugin-kit compile-mo'\"");
 
