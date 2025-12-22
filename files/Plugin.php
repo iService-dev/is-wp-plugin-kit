@@ -1,6 +1,5 @@
 <?php
-//TODO change namespace
-namespace IS\Template\Core;
+namespace NamespacePlaceholder\Core;
 
 use IS\Base\Core\Updater;
 use IS\Base\Core\Auto_Instantiate;
@@ -20,15 +19,14 @@ class Plugin {
 			);
 		}
 
-		//TODO change github repo link and plugin slug
 		$updater = new Updater(
-			'https://github.com/iService-dev/is-template-plugin',
+			'[github-repo-placeholder]',
 			$file,
-			'is-template-plugin'
+			'[plugin-slug-placeholder]'
 		);
 		$updater->init();
 		
-		//TODO only needed if classes in Admin or Frontend folder
+		//TODO: Check if needed - only needed if classes in Admin or Frontend folder
 		Auto_Instantiate::instantiate_classes_static(self::$config, 'Admin');
 		Auto_Instantiate::instantiate_classes_static(self::$config, 'Frontend');
 	}

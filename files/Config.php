@@ -1,13 +1,11 @@
 <?php
-//TODO change namespace
-namespace IS\Template\Core;
+namespace NamespacePlaceholder\Core;
 
 use IS\Base\Core\Abstract_Config;
 
 final class Config extends Abstract_Config {
 	protected function __construct() {
-		//TODO change pluginName and port if general plugin
-		$this->pluginName = "is-template-plugin";
+		$this->pluginName = "[plugin-slug-placeholder]";
 		$this->customPrefix = "iS_";
 		$this->vitePort = 5500;
 

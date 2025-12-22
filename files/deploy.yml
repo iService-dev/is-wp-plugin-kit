@@ -1,0 +1,152 @@
+name: Build & Release WordPress Plugin
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Check for composer.json
+        id: check_composer
+        run: |
+          if [ -f "composer.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Composer
+        if: steps.check_composer.outputs.exists == 'true'
+        uses: php-actions/composer@v6
+        with:
+          php_version: "8.2"
+          args: --no-dev --prefer-dist --optimize-autoloader
+
+      - name: Determine new version
+        id: version
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+
+          if [[ $COMMIT_MSG == *"[skip release]"* ]]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Skipping release due to [skip release] in commit message"
+            exit 0
+          fi
+
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          LATEST_VERSION=${LATEST_TAG#v}
+
+          echo "Latest version: $LATEST_VERSION"
+          echo "Commit message: $COMMIT_MSG"
+
+          IFS='.' read -r -a VERSION_PARTS <<< "$LATEST_VERSION"
+          MAJOR=${VERSION_PARTS[0]:-0}
+          MINOR=${VERSION_PARTS[1]:-0}
+          PATCH=${VERSION_PARTS[2]:-0}
+
+          if [[ $COMMIT_MSG == *"[major]"* ]]; then
+            NEW_VERSION="$((MAJOR + 1)).0.0"
+            BUMP_TYPE="major"
+          elif [[ $COMMIT_MSG == *"[minor]"* ]]; then
+            NEW_VERSION="$MAJOR.$((MINOR + 1)).0"
+            BUMP_TYPE="minor"
+          else
+            NEW_VERSION="$MAJOR.$MINOR.$((PATCH + 1))"
+            BUMP_TYPE="patch"
+          fi
+
+          NEW_TAG="v$NEW_VERSION"
+
+          echo "Version bump: $LATEST_VERSION → $NEW_VERSION ($BUMP_TYPE)"
+
+          if git rev-parse "$NEW_TAG" >/dev/null 2>&1; then
+            echo "Error: Tag $NEW_TAG already exists!"
+            exit 1
+          fi
+
+          echo "skip=false" >> $GITHUB_OUTPUT
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$NEW_TAG" >> $GITHUB_OUTPUT
+          echo "bump_type=$BUMP_TYPE" >> $GITHUB_OUTPUT
+
+      - name: Update plugin version and commit
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          NEW_VERSION="${{ steps.version.outputs.version }}"
+          sed -i "s/Version: .*/Version: $NEW_VERSION/" [plugin-placehoder].php
+          echo "Updated plugin version to $NEW_VERSION"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add [plugin-placehoder].php
+          git commit -m "Bump version to $NEW_VERSION [skip ci]" || echo "No changes to commit"
+          git push origin HEAD:main
+
+      - name: Create and push tag
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          git tag -a "${{ steps.version.outputs.tag }}" -m "Release ${{ steps.version.outputs.version }} (${{ steps.version.outputs.bump_type }})"
+          git push origin "${{ steps.version.outputs.tag }}"
+
+      - name: Prepare package
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          mkdir -p package/[plugin-placehoder]
+          cp [plugin-placehoder].php package/[plugin-placehoder]/
+          cp -r includes package/[plugin-placehoder]/ || true
+          mkdir -p package/[plugin-placehoder]/assets
+          cp -r assets/dist package/[plugin-placehoder]/assets/ || true
+          
+          # Only copy vendor directory if it exists
+          if [ -d "vendor" ]; then
+            cp -r vendor package/[plugin-placehoder]/
+          fi
+
+      - name: Create plugin zip
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          cd package
+          zip -r [plugin-placehoder]-${{ steps.version.outputs.version }}.zip [plugin-placehoder]
+
+      - name: Create GitHub Release
+        if: steps.version.outputs.skip == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: "${{ steps.version.outputs.version }}"
+          files: package/[plugin-placehoder]-${{ steps.version.outputs.version }}.zip
+          generate_release_notes: true
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Success message
+        if: steps.version.outputs.skip == 'false'
+        run: |
+          echo "✅ Successfully released version ${{ steps.version.outputs.version }}"
+          echo "📦 Plugin zip: [plugin-placehoder]-${{ steps.version.outputs.version }}.zip"
+          echo "🏷️ Tag: ${{ steps.version.outputs.tag }}"
