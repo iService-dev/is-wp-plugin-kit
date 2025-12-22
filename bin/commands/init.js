@@ -287,9 +287,9 @@ export async function runInit() {
 		.replace(/\[NamespacePlaceholder\]/g, namespaceSecond)
 		.replace(/\\NamespacePlaceholder\\/g, `\\${namespace}\\`)
 		.replace(/define\('PLUGIN_TYPE', 'general'\);/g, `define('PLUGIN_TYPE', '${pluginType}');`)
-		.replace(/\[base-version-placeholder\]/g, `'${requiredBaseVersion}'`)
-		.replace(/\[wp-version-placeholder\]/g, `'${requiredWpVersion}'`)
-		.replace(/\[php-version-placeholder\]/g, `'${requiredPhpVersion}'`);
+		.replace(/\[base-version-placeholder\]/g, `${requiredBaseVersion}`)
+		.replace(/\[wp-version-placeholder\]/g, `${requiredWpVersion}`)
+		.replace(/\[php-version-placeholder\]/g, `${requiredPhpVersion}`);
 
 	fs.writeFileSync(path.join(root, pluginRootFile), pluginRootContent);
 	console.log(`✓ Created ${pluginRootFile}`);
