@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import fg from "fast-glob";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { writeFileSync } from "node:fs";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -103,7 +104,19 @@ export function wpPluginKitVite(userOptions = {}) {
 
     css: { postcss: "./postcss.config.cjs" },
 
-    plugins: [viteStaticCopy({ targets: validTargets })],
+    plugins: [
+      {
+        name: 'generate-build-version',
+        buildStart() {
+          const buildVersion = Date.now().toString();
+          writeFileSync(
+            path.resolve(cwd, 'includes/build-version.php'),
+            `<?php\n// Auto-generated build version\nreturn '${buildVersion}';\n`
+          );
+        }
+      },
+      viteStaticCopy({ targets: validTargets })
+    ],
 
     ...userOptions,
   });
