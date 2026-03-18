@@ -66,9 +66,9 @@ add_action('plugins_loaded', function () {
 
 	if(!IS\Base\Core\Plugin_Requirements::check(
 		'[Plugin Name Placeholder]',
+		__FILE__,
 		REQUIRED_WP_VERSION,
-		REQUIRED_PHP_VERSION,
-		__FILE__
+		REQUIRED_PHP_VERSION
 	)) {
 		return;
 	}
