@@ -27,7 +27,7 @@ function plugin_slug_placeholder_bootstrap() {
 	if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 		require __DIR__ . '/vendor/autoload.php';
 	}
-	require_once plugin_dir_path(__FILE__) . 'includes/autoloader.php';
+	
 	new \IS\Autoloader(
 		'[NamespacePlaceholder]',
 		plugin_dir_path(__FILE__) . 'includes/lib'
