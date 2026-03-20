@@ -3,3 +3,4 @@ node_modules/
 includes/build-version.php
 vendor/
 .DS_Store
+languages/
