@@ -9,11 +9,10 @@
 		"no-duplicate-imports": "error",
 		"no-unreachable": "error",
 		"no-empty": "error",
-		"no-for-loop": "warn",
+		"unicorn/no-for-loop": "warn",
 		"no-var": "warn",
 		"prefer-const": "warn",
 		"eqeqeq": "warn",
-		"semi": "warn",
 		"no-console": "warn"
 	}
 }
