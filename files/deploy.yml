@@ -120,7 +120,10 @@ jobs:
           cp -r includes package/[plugin-placehoder]/ || true
           mkdir -p package/[plugin-placehoder]/assets
           cp -r assets/dist package/[plugin-placehoder]/assets/ || true
-          
+
+          # Copy compiled translations
+          cp -r languages package/[plugin-placehoder]/ || true
+
           # Only copy vendor directory if it exists
           if [ -d "vendor" ]; then
             cp -r vendor package/[plugin-placehoder]/
