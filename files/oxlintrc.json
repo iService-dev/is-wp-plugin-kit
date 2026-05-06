@@ -9,7 +9,6 @@
 		"no-duplicate-imports": "error",
 		"no-unreachable": "error",
 		"no-empty": "error",
-		"unicorn/no-for-loop": "warn",
 		"no-var": "warn",
 		"prefer-const": "warn",
 		"eqeqeq": "warn",
