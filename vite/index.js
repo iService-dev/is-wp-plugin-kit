@@ -65,7 +65,7 @@ export function wpPluginKitVite(userOptions = {}) {
       assetsDir: "",
       emptyOutDir: true,
       manifest: "manifest.json",
-      target: "es2019",
+      target: "esnext",
       cssCodeSplit: true,
       rollupOptions: {
         input: makeInputs(),
