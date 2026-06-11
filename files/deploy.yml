@@ -45,6 +45,22 @@ jobs:
           php_version: "8.2"
           args: --no-dev --prefer-dist --optimize-autoloader
 
+      - name: Check for Divi 5 module
+        id: check_divi5
+        run: |
+          if [ -d "divi5" ] && [ -f "divi5/package.json" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build Divi 5 assets
+        if: steps.check_divi5.outputs.exists == 'true'
+        working-directory: divi5
+        run: |
+          npm ci
+          npm run build
+
       - name: Determine new version
         id: version
         run: |
@@ -127,6 +143,17 @@ jobs:
           # Only copy vendor directory if it exists
           if [ -d "vendor" ]; then
             cp -r vendor package/[plugin-placehoder]/
+          fi
+
+          # Divi 5 module (optional): ship only the runtime files (PHP + built bundle + metadata). 
+          # Dev sources (src/, node_modules/, build configs) are excluded.
+          if [ -d "divi5" ]; then
+            mkdir -p package/[plugin-placehoder]/divi5
+            cp divi5/bootstrap.php package/[plugin-placehoder]/divi5/
+            cp -r divi5/modules package/[plugin-placehoder]/divi5/
+            cp -r divi5/modules-json package/[plugin-placehoder]/divi5/
+            cp -r divi5/scripts package/[plugin-placehoder]/divi5/
+            cp -r divi5/styles package/[plugin-placehoder]/divi5/
           fi
 
       - name: Create plugin zip

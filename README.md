@@ -67,6 +67,7 @@ npm run build      # Production build
 - **Linting**: OXLint for JS/TS, Stylelint for CSS/SCSS
 - **i18n**: Automatic `.po` to `.mo` compilation
 - **File Watchers**: Auto-lint and compile on file changes
+- **Divi 5 (optional)**: An auto-detected `divi5/` module workspace (own webpack build) is built by `npm run build`, watched by `npm run dev`, and packaged into the release zip. Plugins without a `divi5/` folder are unaffected.
 
 ## Project Structure
 
