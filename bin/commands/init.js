@@ -68,11 +68,6 @@ export async function runInit() {
 			`Plugin Slug (default: ${folderName.toLowerCase().replace(/\s+/g, '-')}): `
 		)) || folderName.toLowerCase().replace(/\s+/g, '-');
 
-	const pluginTypeInput = await prompt(
-		'Plugin Type - [1] General (requires IS Base) or [2] Standalone (default: 1): '
-	);
-	const pluginType = pluginTypeInput === '2' ? 'standalone' : 'general';
-
 	const namespace = await prompt('Namespace (e.g., IS\\MyPlugin): ');
 	if (!namespace) {
 		console.error('❌ Namespace is required!');
@@ -88,10 +83,8 @@ export async function runInit() {
 	const textDomain = (await prompt(`Text Domain (default: ${pluginSlug}): `)) || pluginSlug;
 	const vitePort = (await prompt('Vite Dev Port (default: 5500): ')) || '5500';
 
-	// Read correct template based on plugin type
-	const pluginRootTemplateFile = pluginType === 'standalone' ? 'plugin-root-standalone.php' : 'plugin-root.php';
 	const pluginRootTemplate = fs.readFileSync(
-		path.join(__dirname, '../../files', pluginRootTemplateFile),
+		path.join(__dirname, '../../files/plugin-root.php'),
 		'utf-8'
 	);
 
@@ -103,13 +96,10 @@ export async function runInit() {
 		`Required PHP version (default: ${defaultPhpVersion}): `,
 		defaultPhpVersion
 	);
-	const requiredBaseVersion =
-		pluginType === 'general'
-			? await promptVersion(
-					`Required IS Base Plugin version (default: ${defaultBaseVersion}): `,
-					defaultBaseVersion
-			  )
-			: null;
+	const requiredBaseVersion = await promptVersion(
+		`Required IS Base Plugin version (default: ${defaultBaseVersion}): `,
+		defaultBaseVersion
+	);
 
 	console.log('\n');
 
@@ -286,7 +276,6 @@ export async function runInit() {
 		.replace(/plugin_slug_placeholder/g, pluginSlug.replace(/-/g, '_'))
 		.replace(/\[NamespacePlaceholder\]/g, namespaceSecond)
 		.replace(/\\NamespacePlaceholder\\/g, `\\${namespace}\\`)
-		.replace(/define\('PLUGIN_TYPE', 'general'\);/g, `define('PLUGIN_TYPE', '${pluginType}');`)
 		.replace(/\[base-version-placeholder\]/g, `${requiredBaseVersion}`)
 		.replace(/\[wp-version-placeholder\]/g, `${requiredWpVersion}`)
 		.replace(/\[php-version-placeholder\]/g, `${requiredPhpVersion}`);
@@ -294,42 +283,37 @@ export async function runInit() {
 	fs.writeFileSync(path.join(root, pluginRootFile), pluginRootContent);
 	console.log(`✓ Created ${pluginRootFile}`);
 
-	if (pluginType === 'general') {
-		// Plugin.php
-		const pluginPhpTemplate = fs.readFileSync(
-			path.join(__dirname, '../../files/Plugin.php'),
-			'utf-8'
-		);
+	// Plugin.php
+	const pluginPhpTemplate = fs.readFileSync(
+		path.join(__dirname, '../../files/Plugin.php'),
+		'utf-8'
+	);
 
-		const pluginPhpContent = pluginPhpTemplate
-			.replace(/NamespacePlaceholder/g, `${namespace}`)
-			.replace(/'\[github-repo-placeholder\]'/g, `'${githubRepo}'`)
-			.replace(/'\[plugin-slug-placeholder\]'/g, `'${pluginSlug}'`)
+	const pluginPhpContent = pluginPhpTemplate
+		.replace(/NamespacePlaceholder/g, `${namespace}`)
+		.replace(/'\[github-repo-placeholder\]'/g, `'${githubRepo}'`)
+		.replace(/'\[plugin-slug-placeholder\]'/g, `'${pluginSlug}'`)
 
-		fs.writeFileSync(path.join(root, 'includes/lib/Core/Plugin.php'), pluginPhpContent);
-		console.log('✓ Created includes/lib/Core/Plugin.php');
+	fs.writeFileSync(path.join(root, 'includes/lib/Core/Plugin.php'), pluginPhpContent);
+	console.log('✓ Created includes/lib/Core/Plugin.php');
 
-		// Config.php
-		const configPhpTemplate = fs.readFileSync(
-			path.join(__dirname, '../../files/Config.php'),
-			'utf-8'
-		);
+	// Config.php
+	const configPhpTemplate = fs.readFileSync(
+		path.join(__dirname, '../../files/Config.php'),
+		'utf-8'
+	);
 
-		const configPhpContent = configPhpTemplate
-			.replace(/NamespacePlaceholder/g, `${namespace}`)
-			.replace(/\[plugin-slug-placeholder\]/g, `${pluginSlug}`)
-			.replace(/\$this->vitePort = 5500;/g, `$this->vitePort = ${vitePort};`)
+	const configPhpContent = configPhpTemplate
+		.replace(/NamespacePlaceholder/g, `${namespace}`)
+		.replace(/\[plugin-slug-placeholder\]/g, `${pluginSlug}`)
+		.replace(/\$this->vitePort = 5500;/g, `$this->vitePort = ${vitePort};`)
 
-		fs.writeFileSync(path.join(root, 'includes/lib/Core/Config.php'), configPhpContent);
-		console.log('✓ Created includes/lib/Core/Config.php');
-	} else {
-		console.log('↺ Plugin.php and Config.php skipped (standalone plugin - add your own code)');
-	}
+	fs.writeFileSync(path.join(root, 'includes/lib/Core/Config.php'), configPhpContent);
+	console.log('✓ Created includes/lib/Core/Config.php');
 
 	// ------------------------------------------
 	console.log('\n🎉 Project initialized successfully!\n');
 	console.log(`Plugin: ${pluginName}`);
-	console.log(`Type: ${pluginType}`);
 	console.log(`Slug: ${pluginSlug}`);
 	console.log(`Namespace: ${namespace}`);
 	console.log(`Text Domain: ${textDomain}`);
