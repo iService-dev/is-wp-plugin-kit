@@ -15,14 +15,6 @@
 if (!defined('ABSPATH'))
 	exit;
 
-define('PLUGIN_TYPE', 'general');
-
-const REQUIRED_BASE_VERSION = '[base-version-placeholder]';
-// Note: These values should match the plugin header above
-const REQUIRED_WP_VERSION = '[wp-version-placeholder]';
-const REQUIRED_PHP_VERSION = '[php-version-placeholder]';
-
-
 function plugin_slug_placeholder_bootstrap() {
 	if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 		require __DIR__ . '/vendor/autoload.php';
@@ -56,19 +48,12 @@ add_action('plugins_loaded', function () {
 		return;
 	}
 
+	$required_base_version = '[base-version-placeholder]';
+
 	if (!\IS\Base\Core\Plugin_Requirements::check_base_version(
-		REQUIRED_BASE_VERSION,
+		$required_base_version,
 		'[Plugin Name Placeholder]',
 		__FILE__
-	)) {
-		return;
-	}
-
-	if(!IS\Base\Core\Plugin_Requirements::check(
-		'[Plugin Name Placeholder]',
-		__FILE__,
-		REQUIRED_WP_VERSION,
-		REQUIRED_PHP_VERSION
 	)) {
 		return;
 	}
