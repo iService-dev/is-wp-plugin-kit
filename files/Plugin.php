@@ -3,6 +3,7 @@ namespace NamespacePlaceholder\Core;
 
 use IS\Base\Core\Updater;
 use IS\Base\Core\Auto_Instantiate;
+use IS\Base\Core\Divi;
 
 class Plugin {
 	private static Config $config;
@@ -25,7 +26,12 @@ class Plugin {
 			'[plugin-slug-placeholder]'
 		);
 		$updater->init();
-		
+
+		// Registers Divi 4 and Divi 5 modules.
+		if (class_exists(Divi::class)) {
+			new Divi(self::$config);
+		}
+
 		//TODO: Check if needed - only needed if classes in Admin or Frontend folder
 		Auto_Instantiate::instantiate_classes_static(self::$config, 'Admin');
 		Auto_Instantiate::instantiate_classes_static(self::$config, 'Frontend');

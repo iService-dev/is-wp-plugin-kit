@@ -21,6 +21,10 @@ export async function runDev() {
 
 	// Divi 5 module (optional): run its webpack watcher alongside the Vite dev server.
 	if (fs.existsSync('divi5/package.json')) {
+		if (!fs.existsSync('divi5/node_modules')) {
+			console.log('▸ Installing Divi 5 module dependencies…');
+			execSync('npm install', { cwd: 'divi5', stdio: 'inherit' });
+		}
 		commands.push('"cd divi5 && npm run start"');
 	}
 

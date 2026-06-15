@@ -4,3 +4,9 @@ includes/build-version.php
 vendor/
 .DS_Store
 languages/
+
+divi5/node_modules/
+divi5/vendor/
+divi5/scripts/
+divi5/styles/
+divi5/modules-json/

@@ -1,0 +1,164 @@
+{
+  "name": "is/example-module",
+  "d4Shortcode": "",
+  "title": "IS Example Module",
+  "titles": "IS Example Modules",
+  "moduleIcon": "is/module-example",
+  "moduleClassName": "is_example_module",
+  "moduleOrderClassName": "is_example_module",
+  "category": "module",
+  "attributes": {
+    "module": {
+      "type": "object",
+      "selector": "{{selector}}",
+      "styleProps": {
+        "border": {
+          "important": true
+        }
+      },
+      "settings": {
+        "meta": {
+          "adminLabel": {}
+        },
+        "advanced": {
+          "link": {},
+          "text": {},
+          "htmlAttributes": {}
+        },
+        "decoration": {
+          "attributes": {},
+          "background": {},
+          "sizing": {},
+          "spacing": {},
+          "border": {},
+          "boxShadow": {},
+          "filters": {},
+          "transform": {},
+          "animation": {},
+          "overflow": {},
+          "disabledOn": {},
+          "transition": {},
+          "position": {},
+          "zIndex": {},
+          "scroll": {},
+          "sticky": {}
+        }
+      }
+    },
+    "title": {
+      "type": "object",
+      "selector": "{{selector}} .is_example_module__title",
+      "styleProps": {
+        "font": {
+          "important": {
+            "font": {
+              "desktop": {
+                "value": {
+                  "color": true
+                }
+              }
+            }
+          }
+        }
+      },
+      "settings": {
+        "innerContent": {
+          "groupType": "group-item",
+          "item": {
+            "groupName": "mainContent",
+            "priority": 10,
+            "render": true,
+            "attrName": "title.innerContent",
+            "label": "Title",
+            "description": "Input your title text here.",
+            "features": {
+              "sticky": false,
+              "dynamicContent": false
+            },
+            "component": {
+              "name": "divi/text",
+              "type": "field"
+            }
+          }
+        },
+        "decoration": {
+          "font": {
+            "priority": 10,
+            "component": {
+              "props": {
+                "groupLabel": "Title Text",
+                "fieldLabel": "Title"
+              }
+            }
+          }
+        }
+      },
+      "tagName": "h2",
+      "attributes": {
+        "class": "is_example_module__title"
+      },
+      "inlineEditor": "plainText",
+      "elementType": "heading",
+      "childrenSanitizer": "et_core_esc_previously"
+    },
+    "content": {
+      "type": "object",
+      "selector": "{{selector}} .is_example_module__content",
+      "tagName": "div",
+      "attributes": {
+        "class": "is_example_module__content"
+      },
+      "inlineEditor": "richText",
+      "childrenSanitizer": "et_core_esc_previously",
+      "styleProps": {
+        "bodyFont": {
+          "selectors": {
+            "desktop": {
+              "value": "{{selector}} .is_example_module__content"
+            }
+          }
+        }
+      },
+      "settings": {
+        "innerContent": {
+          "groupType": "group-item",
+          "item": {
+            "groupName": "mainContent",
+            "priority": 20,
+            "render": true,
+            "attrName": "content.innerContent",
+            "label": "Content",
+            "description": "Input the main text content for your module here.",
+            "features": {
+              "sticky": false,
+              "dynamicContent": false
+            },
+            "component": {
+              "name": "divi/richtext",
+              "type": "field"
+            }
+          }
+        },
+        "decoration": {
+          "bodyFont": {}
+        }
+      }
+    }
+  },
+  "customCssFields": {
+    "title": {
+      "subName": "title",
+      "selector": "div{{selector}}",
+      "selectorSuffix": " .is_example_module__title"
+    },
+    "content": {
+      "subName": "content",
+      "selectorSuffix": " .is_example_module__content"
+    }
+  },
+  "settings": {
+    "content": "auto",
+    "design": "auto",
+    "advanced": "auto"
+  }
+}

@@ -1,0 +1,18 @@
+// This style is rendered on the Front-End and in the Visual Builder (compiled to styles/bundle.css).
+
+.is_example_module {
+  padding: 30px;
+  background-color: #ecf4f7;
+
+  &__inner {
+    position: relative;
+  }
+
+  &__title {
+    margin: 0 0 10px;
+  }
+
+  &__content {
+    line-height: 1.7;
+  }
+}

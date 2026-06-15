@@ -28,6 +28,16 @@ npm install
 npm run dev
 ```
 
+### Optional: Add a Divi 5 module
+
+```bash
+npx @iservice-dev/is-wp-plugin-kit add-divi5
+```
+
+Scaffolds a self-contained `divi5/` workspace (own webpack build) with a working
+example module. Namespace and slug are auto-detected. Then `cd divi5 && npm install`.
+The IS Base plugin auto-loads it — no wiring needed.
+
 ## Configuration
 
 ### Port Settings
@@ -57,6 +67,14 @@ All customization points in the PHP template files are marked with `TODO` commen
 ```bash
 npm run dev        # Development mode with watchers
 npm run build      # Production build
+```
+
+Kit CLI (via `npx @iservice-dev/is-wp-plugin-kit <command>`):
+
+```bash
+init               # Scaffold a new plugin
+add-divi5          # Add a Divi 5 module bundle (divi5/)
+compile-mo         # Convert .po → .mo
 ```
 
 ## What's Included
