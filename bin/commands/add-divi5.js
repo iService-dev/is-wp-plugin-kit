@@ -105,31 +105,32 @@ export async function runAddDivi5() {
 	const detectedNs = detectNamespace(root);
 	const detectedSlug = detectSlug(root);
 
-	// Prefer flags; prompt only for what's missing. With --yes (or namespace +
-	// slug both given as values), run fully non-interactively.
-	const nonInteractive = flags.yes || (flagStr('namespace') && flagStr('slug'));
-	const { ask, close } = nonInteractive ? { ask: null, close: () => {} } : makePrompter();
+	// Resolution order for each value: an explicit flag wins, otherwise the
+	// auto-detected value is used as-is (no prompt — the Divi 5 module namespace
+	// is always a sub-namespace of the plugin, so there is nothing to choose).
+	// We only fall back to an interactive prompt when nothing could be detected,
+	// and never prompt under --yes. The prompter is created lazily so the normal
+	// (fully-detected) flow stays non-interactive.
+	let prompter = null;
+	const ask = async (question) => {
+		if (flags.yes) return '';
+		if (!prompter) prompter = makePrompter();
+		return (await prompter.ask(question)).trim();
+	};
 
 	const namespace =
-		flagStr('namespace') ||
-		(ask &&
-			(await ask(
-				`Plugin namespace${detectedNs ? ` (default: ${detectedNs})` : ' (e.g. IS\\MyPlugin)'}: `
-			))) ||
-		detectedNs;
+		flagStr('namespace') || detectedNs || (await ask('Plugin namespace (e.g. IS\\MyPlugin): '));
 	if (!namespace) {
-		close();
-		console.error('❌ Namespace is required (pass --namespace "IS\\MyPlugin").');
+		if (prompter) prompter.close();
+		console.error('❌ Namespace could not be detected (pass --namespace "IS\\MyPlugin").');
 		process.exit(1);
 	}
 
-	const slug =
-		flagStr('slug') || (ask && (await ask(`Plugin slug (default: ${detectedSlug}): `))) || detectedSlug;
-	const textDomain =
-		flagStr('text-domain') ||
-		(ask && (await ask(`Text domain (default: ${slug}): `))) ||
-		slug;
-	close();
+	const slug = flagStr('slug') || detectedSlug || (await ask('Plugin slug: '));
+	const textDomain = flagStr('text-domain') || slug;
+	if (prompter) prompter.close();
+
+	console.log(`Using namespace ${namespace}, slug ${slug}, text domain ${textDomain}.\n`);
 
 	// Derived values
 	const constPrefix = slug.toUpperCase().replace(/[^A-Z0-9]+/g, '_') + '_D5';
@@ -154,9 +155,9 @@ export async function runAddDivi5() {
 	console.log(`\n✓ Created divi5/ (namespace ${nsRaw}\\Divi5, handle ${assetHandle})`);
 	console.log('\n🎉 Divi 5 module bundle added!\n');
 	console.log('Next steps:');
-	console.log('  cd divi5');
-	console.log('  npm install');
-	console.log('  npm run build      # or: npm run start (watch)\n');
+	console.log('  npm run build      # builds the plugin + divi5/ (installs its deps first time)');
+	console.log('  npm run dev        # watches everything, divi5/ included\n');
+	console.log('Both root commands drive divi5/ automatically — no separate cd/install needed.');
 	console.log('The base plugin auto-loads divi5/bootstrap.php — no wiring needed.');
 	console.log('Duplicate src/components/example-module + modules/ExampleModule to add more.\n');
 	process.exit(0);

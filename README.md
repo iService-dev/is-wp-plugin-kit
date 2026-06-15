@@ -35,8 +35,10 @@ npx @iservice-dev/is-wp-plugin-kit add-divi5
 ```
 
 Scaffolds a self-contained `divi5/` workspace (own webpack build) with a working
-example module. Namespace and slug are auto-detected. Then `cd divi5 && npm install`.
-The IS Base plugin auto-loads it — no wiring needed.
+example module. Namespace and slug are auto-detected. From then on `npm run build`
+and `npm run dev` in the plugin root build/watch `divi5/` too (installing its deps
+on first run) — no separate `cd divi5` step needed. The IS Base plugin auto-loads
+it — no wiring needed.
 
 ## Configuration
 

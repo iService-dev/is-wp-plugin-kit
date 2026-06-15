@@ -38,6 +38,16 @@ front-end output stay in sync.
 
 ## Build
 
+Normally you don't build here directly — the plugin-root commands drive this
+workspace automatically (installing its deps on first run):
+
+```bash
+npm run build      # in the plugin root: builds the plugin + divi5/
+npm run dev        # in the plugin root: watches everything, divi5/ included
+```
+
+To build only this module standalone:
+
 ```bash
 cd divi5
 npm install
