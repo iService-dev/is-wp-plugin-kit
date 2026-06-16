@@ -13,7 +13,7 @@ const selfPkg = require('../../package.json');
 const toolkitVersion = `^${selfPkg.version}`;
 const defaultWpVersion = '6.5';
 const defaultPhpVersion = '8.3';
-const defaultBaseVersion = '1.0.16';
+const defaultBaseVersion = '1.2.2';
 
 function prompt(question) {
 	const rl = readline.createInterface({
