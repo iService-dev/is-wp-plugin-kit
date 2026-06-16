@@ -1,9 +1,9 @@
 <?php
 namespace NamespacePlaceholder\Core;
 
-use IS\Base\Core\Updater;
+use IS\Base\Core\Services\Updater_Service;
 use IS\Base\Core\Auto_Instantiate;
-use IS\Base\Core\Divi;
+use IS\Base\Core\Services\Divi_Service;
 
 class Plugin {
 	private static Config $config;
@@ -20,7 +20,7 @@ class Plugin {
 			);
 		}
 
-		$updater = new Updater(
+		$updater = new Updater_Service(
 			'[github-repo-placeholder]',
 			$file,
 			'[plugin-slug-placeholder]'
@@ -28,8 +28,8 @@ class Plugin {
 		$updater->init();
 
 		// Registers Divi 4 and Divi 5 modules.
-		if (class_exists(Divi::class)) {
-			new Divi(self::$config);
+		if (class_exists(Divi_Service::class)) {
+			new Divi_Service(self::$config);
 		}
 
 		//TODO: Check if needed - only needed if classes in Admin or Frontend folder

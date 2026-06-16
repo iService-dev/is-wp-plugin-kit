@@ -217,6 +217,9 @@ export async function runInit() {
 		'assets/src/legacy/css',
 		'includes/lib/Admin',
 		'includes/lib/Core',
+		'includes/lib/Core/Helpers',
+		'includes/lib/Core/Models',
+		'includes/lib/Core/Services',
 		'includes/lib/Frontend',
 	];
 
