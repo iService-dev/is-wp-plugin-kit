@@ -138,6 +138,13 @@ export async function runAddDivi5() {
 	const pkgName = `${slug}-divi5`;
 	const nsRaw = namespace.replace(/\\+$/, ''); // trim trailing backslash if any
 	const nsEscaped = nsRaw.replace(/\\/g, '\\\\'); // for string literals / JSON
+	// Unique per-plugin namespace for the @wordpress/hooks addAction/addFilter calls
+	const hooksNs =
+		slug
+			.split(/[^a-zA-Z0-9]+/)
+			.filter(Boolean)
+			.map((w, i) => (i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()))
+			.join('') || 'divi5Module';
 
 	// D5_NS_ESCAPED_PLACEHOLDER must be replaced before D5_NS_PLACEHOLDER,
 	// since the former contains the latter as a prefix.
@@ -148,7 +155,8 @@ export async function runAddDivi5() {
 			.split('D5_CONST_PLACEHOLDER').join(constPrefix)
 			.split('D5_HANDLE_PLACEHOLDER').join(assetHandle)
 			.split('D5_PKG_PLACEHOLDER').join(pkgName)
-			.split('D5_TEXTDOMAIN_PLACEHOLDER').join(textDomain);
+			.split('D5_TEXTDOMAIN_PLACEHOLDER').join(textDomain)
+			.split('D5_HOOKS_NS_PLACEHOLDER').join(hooksNs);
 
 	copyTemplate(TEMPLATE_DIR, destDir, replace);
 

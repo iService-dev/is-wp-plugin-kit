@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'D5_CONST_PLACEHOLDER_PATH', plugin_dir_path( __FILE__ ) );
 define( 'D5_CONST_PLACEHOLDER_URL', plugin_dir_url( __FILE__ ) );
 define( 'D5_CONST_PLACEHOLDER_JSON_PATH', D5_CONST_PLACEHOLDER_PATH . 'modules-json/' );
-define( 'D5_CONST_PLACEHOLDER_VERSION', '0.0.1' );
+define( 'D5_CONST_PLACEHOLDER_VERSION', \D5_NS_PLACEHOLDER\Core\Config::get_instance()->version );
 
 /*
  * Autoload module classes. Composer is optional — if `composer dump-autoload`

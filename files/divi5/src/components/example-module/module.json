@@ -3,7 +3,7 @@
   "d4Shortcode": "",
   "title": "IS Example Module",
   "titles": "IS Example Modules",
-  "moduleIcon": "is/module-example",
+  "moduleIcon": "is/logo",
   "moduleClassName": "is_example_module",
   "moduleOrderClassName": "is_example_module",
   "category": "module",
