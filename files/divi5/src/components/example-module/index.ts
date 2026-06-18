@@ -5,7 +5,7 @@ import {
 } from '@divi/types';
 
 // WordPress dependencies.
-import { __, setLocaleData } from '@wordpress/i18n';
+import { __, setLocaleData } from '@wordpress/i10n';
 
 // Local dependencies.
 import metadata from './module.json';
@@ -20,7 +20,7 @@ import { de } from './l10n';
 import './style.scss';
 import './module.scss';
 
-const I18N_DOMAIN = 'D5_TEXTDOMAIN_PLACEHOLDER';
+const I18N_DOMAIN = 'D5_TEXTDOMAIN_PLACEHOLDER'; // is-...-plugin
 
 // Load the translation catalog into wp.i18n for the Builder, gated by the page
 // language. Divi does not run a third-party module's module.json strings through
