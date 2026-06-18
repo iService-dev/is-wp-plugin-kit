@@ -5,7 +5,7 @@ import {
 } from '@divi/types';
 
 // WordPress dependencies.
-import { __, setLocaleData } from '@wordpress/i10n';
+import { __, setLocaleData } from '@wordpress/i18n';
 
 // Local dependencies.
 import metadata from './module.json';
