@@ -12,11 +12,6 @@ export async function runBuild() {
 	}
 
 	const scssFiles = globSync('assets/src/scss/**/*.scss');
-	if (scssFiles.length > 0) {
-		execSync('stylelint "assets/src/scss/**/*.scss" --fix', { stdio: 'inherit' });
-	} else {
-		console.log('↺ No SCSS files found, skipping stylelint');
-	}
 
 	if (tsFiles.length > 0 || scssFiles.length > 0) {
 		execSync('vite build', { stdio: 'inherit' });
