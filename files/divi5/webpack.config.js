@@ -3,10 +3,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  // Entry point — the Visual Builder bundle.
+  // Entry points — `bundle` is the Visual Builder, `module` is the Front-End script.
   // @see https://webpack.js.org/concepts/#entry
   entry: {
     bundle: './src/index.ts',
+    module: './src/components/example-module/module.ts',
   },
 
   // Divi & WordPress already enqueue these in global scope, so they must NOT be

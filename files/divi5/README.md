@@ -21,8 +21,9 @@ divi5/
 ├─ tsconfig.json
 ├─ composer.json                 # optional PSR-4 autoload (a fallback autoloader exists)
 ├─ src/                          # Visual Builder (TypeScript/React) source
-│  ├─ index.ts                   # registers the module in the VB
-│  └─ components/example-module/  # the module: edit, styles, settings (module.json), etc.
+│  ├─ index.ts                   # registers the module in the VB + loads translations
+│  └─ components/example-module/  # the module: edit, styles, settings (module.json),
+│                                 #   translations (l10n.ts), Front-End script (module.ts)
 └─ modules/                      # Front-End rendering (PHP)
    ├─ Modules.php                # adds module(s) to the D5 dependency tree
    └─ ExampleModule/
@@ -58,12 +59,30 @@ The build emits (all git-ignored):
 | Output                         | Loaded where                          |
 | ------------------------------ | ------------------------------------- |
 | `scripts/bundle.js`            | Visual Builder                        |
+| `scripts/module.js`            | Front-End (enqueued by the render callback) |
 | `styles/bundle.css`            | Front-End **and** Visual Builder (`module.scss`) |
 | `styles/vb-bundle.css`         | Visual Builder only (`style.scss`)    |
 | `modules-json/example-module/` | PHP `ModuleRegistration::register_module` (copied `module.json` + default attrs) |
 
-`bootstrap.php` enqueues these via Divi's `PackageBuildManager` (VB) and
-`wp_enqueue_style` (front-end). It is only `require`d when Divi 5 is active.
+`bootstrap.php` enqueues the VB script/style via Divi's `PackageBuildManager`
+and the front-end `styles/bundle.css` via `wp_enqueue_style`; the front-end
+`scripts/module.js` is enqueued from the module's `render_callback`. These are
+only loaded when Divi 5 is active.
+
+## Translations
+
+Divi does **not** run a third-party module's `module.json` strings through
+`wp_set_script_translations` in the Builder's app-window, so the module ships its
+own catalog instead:
+
+- `src/components/example-module/l10n.ts` — the catalog in `setLocaleData`
+  format; keys are the English source strings.
+- `index.ts` loads it into `wp.i18n` (gated by the page language) and runs the
+  Builder metadata (title, field labels/descriptions, group/option labels) and
+  the default admin label through `__()`.
+
+Front-end PHP strings stay in the plugin's normal `.po`/`.mo`; this catalog is
+only for the Builder/JS strings. Edit `l10n.ts` (or add locales) and rebuild.
 
 ## Module icon
 
