@@ -21,7 +21,7 @@
     "is-wp-plugin-kit": "./bin/is-wp-plugin-kit.js"
   },
   "dependencies": {
-    "@types/jquery": "^3.5.33",
+    "@types/jquery": "^4.0.1",
     "@types/node": "^25.9.1",
     "@types/sizzle": "^2.3.0",
     "autoprefixer": "^10.4.21",
