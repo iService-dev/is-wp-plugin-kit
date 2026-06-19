@@ -26,7 +26,7 @@
     "@types/sizzle": "^2.3.0",
     "autoprefixer": "^10.4.21",
     "chokidar-cli": "^3.0.0",
-    "concurrently": "^8.2.2",
+    "concurrently": "^10.0.3",
     "fast-glob": "^3.3.3",
     "glob": "^13.0.6",
     "oxlint": "~1.68.0",
