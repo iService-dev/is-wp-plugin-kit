@@ -7,8 +7,8 @@
 
 namespace D5_NS_PLACEHOLDER\Divi5\Modules\ExampleModule\ExampleModuleTrait;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	die( 'Direct access forbidden.' );
+if (!defined('ABSPATH')) {
+	die('Direct access forbidden.');
 }
 
 use ET\Builder\Packages\Module\Layout\Components\MultiView\MultiViewScriptData;
@@ -32,7 +32,7 @@ trait ModuleScriptDataTrait {
 	 *   @type array  $attrs    Module attributes.
 	 * }
 	 */
-	public static function module_script_data( $args ) {
+	public static function module_script_data($args) {
 		$id             = $args['id'] ?? '';
 		$name           = $args['name'] ?? '';
 		$selector       = $args['selector'] ?? '';
@@ -65,16 +65,16 @@ trait ModuleScriptDataTrait {
 				'hoverSelector' => $selector,
 				'setContent'    => [
 					[
-						'selector'      => $selector . ' .is_example_module__title',
+						'selector'      => $selector.' .is_example_module__title',
 						'data'          => $attrs['title']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
+						'valueResolver' => function ($value) {
 							return $value ?? '';
 						},
 					],
 					[
-						'selector'      => $selector . ' .is_example_module__content',
+						'selector'      => $selector.' .is_example_module__content',
 						'data'          => $attrs['content']['innerContent'] ?? [],
-						'valueResolver' => function ( $value ) {
+						'valueResolver' => function ($value) {
 							return $value ?? '';
 						},
 						'sanitizer'     => 'et_core_esc_previously',

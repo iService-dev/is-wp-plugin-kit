@@ -7,8 +7,8 @@
 
 namespace D5_NS_PLACEHOLDER\Divi5\Modules\ExampleModule;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	die( 'Direct access forbidden.' );
+if (!defined('ABSPATH')) {
+	die('Direct access forbidden.');
 }
 
 use ET\Builder\Framework\DependencyManagement\Interfaces\DependencyInterface;
@@ -38,15 +38,15 @@ class ExampleModule implements DependencyInterface {
 	public function load() {
 		// The folder name must match the component directory name copied to
 		// modules-json/ by webpack (src/components/example-module → example-module).
-		$module_json_folder_path = D5_CONST_PLACEHOLDER_JSON_PATH . 'example-module/';
+		$module_json_folder_path = D5_CONST_PLACEHOLDER_JSON_PATH.'example-module/';
 
 		add_action(
 			'init',
-			function () use ( $module_json_folder_path ) {
+			function () use ($module_json_folder_path) {
 				ModuleRegistration::register_module(
 					$module_json_folder_path,
 					[
-						'render_callback' => [ ExampleModule::class, 'render_callback' ],
+						'render_callback' => [ExampleModule::class, 'render_callback'],
 					]
 				);
 			}

@@ -3,9 +3,9 @@ import React, { ReactElement } from 'react';
 
 // Divi dependencies.
 import {
-  StyleContainer,
-  StylesProps,
-  CssStyle,
+	StyleContainer,
+	StylesProps,
+	CssStyle,
 } from '@divi/module';
 
 // Local dependencies.
@@ -21,56 +21,56 @@ import { cssFields } from './custom-css';
  * @since ??
  */
 export const ModuleStyles = ({
-  attrs,
-  elements,
-  settings,
-  orderClass,
-  mode,
-  state,
-  noStyleTag,
+	attrs,
+	elements,
+	settings,
+	orderClass,
+	mode,
+	state,
+	noStyleTag,
 }: StylesProps<ExampleModuleAttrs>): ReactElement => {
-  const textSelector = `${orderClass} .is_example_module__inner`;
+	const textSelector = `${orderClass} .is_example_module__inner`;
 
-  return (
-    <StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>
-      {/* Module */}
-      {elements.style({
-        attrName: 'module',
-        styleProps: {
-          disabledOn: {
-            disabledModuleVisibility: settings?.disabledModuleVisibility,
-          },
-          advancedStyles: [
-            {
-              componentName: 'divi/text',
-              props: {
-                selector: textSelector,
-                attr: attrs?.module?.advanced?.text,
-              },
-            },
-          ],
-        },
-      })}
+	return (
+		<StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>
+			{/* Module */}
+			{elements.style({
+				attrName: 'module',
+				styleProps: {
+					disabledOn: {
+						disabledModuleVisibility: settings?.disabledModuleVisibility,
+					},
+					advancedStyles: [
+						{
+							componentName: 'divi/text',
+							props: {
+								selector: textSelector,
+								attr: attrs?.module?.advanced?.text,
+							},
+						},
+					],
+				},
+			})}
 
-      {/* Title */}
-      {elements.style({
-        attrName: 'title',
-      })}
+			{/* Title */}
+			{elements.style({
+				attrName: 'title',
+			})}
 
-      {/* Content */}
-      {elements.style({
-        attrName: 'content',
-      })}
+			{/* Content */}
+			{elements.style({
+				attrName: 'content',
+			})}
 
-      {/*
-       * CssStyle must be added at the very bottom so the user's custom CSS
-       * can override the module styles above.
-       */}
-      <CssStyle
-        selector={orderClass}
-        attr={attrs.css}
-        cssFields={cssFields}
-      />
-    </StyleContainer>
-  );
+			{/*
+			* CssStyle must be added at the very bottom so the user's custom CSS
+			* can override the module styles above.
+			*/}
+			<CssStyle
+				selector={orderClass}
+				attr={attrs.css}
+				cssFields={cssFields}
+			/>
+		</StyleContainer>
+	);
 };

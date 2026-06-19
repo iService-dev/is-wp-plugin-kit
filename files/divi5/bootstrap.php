@@ -12,35 +12,35 @@
  * @package D5_NS_PLACEHOLDER\Divi5
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
-define( 'D5_CONST_PLACEHOLDER_PATH', plugin_dir_path( __FILE__ ) );
-define( 'D5_CONST_PLACEHOLDER_URL', plugin_dir_url( __FILE__ ) );
-define( 'D5_CONST_PLACEHOLDER_JSON_PATH', D5_CONST_PLACEHOLDER_PATH . 'modules-json/' );
-define( 'D5_CONST_PLACEHOLDER_VERSION', \D5_NS_PLACEHOLDER\Core\Config::get_instance()->version );
+define('D5_CONST_PLACEHOLDER_PATH', plugin_dir_path(__FILE__));
+define('D5_CONST_PLACEHOLDER_URL', plugin_dir_url(__FILE__));
+define('D5_CONST_PLACEHOLDER_JSON_PATH', D5_CONST_PLACEHOLDER_PATH.'modules-json/');
+define('D5_CONST_PLACEHOLDER_VERSION', \D5_NS_PLACEHOLDER\Core\Config::get_instance()->version);
 
 /*
  * Autoload module classes. Composer is optional — if `composer dump-autoload`
  * has not been run, fall back to a tiny PSR-4 autoloader for our namespace.
  */
-if ( file_exists( D5_CONST_PLACEHOLDER_PATH . 'vendor/autoload.php' ) ) {
-	require D5_CONST_PLACEHOLDER_PATH . 'vendor/autoload.php';
+if (file_exists(D5_CONST_PLACEHOLDER_PATH.'vendor/autoload.php')) {
+	require D5_CONST_PLACEHOLDER_PATH.'vendor/autoload.php';
 } else {
 	spl_autoload_register(
-		function ( $class ) {
+		function ($class) {
 			$prefix = 'D5_NS_ESCAPED_PLACEHOLDER\\Divi5\\Modules\\';
-			$len    = strlen( $prefix );
+			$len    = strlen($prefix);
 
-			if ( 0 !== strncmp( $prefix, $class, $len ) ) {
+			if (0 !== strncmp($prefix, $class, $len)) {
 				return;
 			}
 
-			$relative = substr( $class, $len );
-			$file     = D5_CONST_PLACEHOLDER_PATH . 'modules/' . str_replace( '\\', '/', $relative ) . '.php';
+			$relative = substr($class, $len);
+			$file     = D5_CONST_PLACEHOLDER_PATH.'modules/'.str_replace('\\', '/', $relative).'.php';
 
-			if ( file_exists( $file ) ) {
+			if (file_exists($file)) {
 				require $file;
 			}
 		}
@@ -48,7 +48,7 @@ if ( file_exists( D5_CONST_PLACEHOLDER_PATH . 'vendor/autoload.php' ) ) {
 }
 
 // Register the module(s) with the Divi 5 module library dependency tree.
-require D5_CONST_PLACEHOLDER_PATH . 'modules/Modules.php';
+require D5_CONST_PLACEHOLDER_PATH.'modules/Modules.php';
 
 /**
  * Enqueue the Visual Builder bundle (script + style).
@@ -58,11 +58,11 @@ require D5_CONST_PLACEHOLDER_PATH . 'modules/Modules.php';
 add_action(
 	'divi_visual_builder_assets_before_enqueue_scripts',
 	function () {
-		if ( ! function_exists( 'et_builder_d5_enabled' ) || ! et_builder_d5_enabled() ) {
+		if (!function_exists('et_builder_d5_enabled') || ! et_builder_d5_enabled()) {
 			return;
 		}
 
-		if ( ! function_exists( 'et_core_is_fb_enabled' ) || ! et_core_is_fb_enabled() ) {
+		if (!function_exists('et_core_is_fb_enabled') || ! et_core_is_fb_enabled()) {
 			return;
 		}
 
@@ -71,7 +71,7 @@ add_action(
 				'name'    => 'D5_HANDLE_PLACEHOLDER-builder-bundle-script',
 				'version' => D5_CONST_PLACEHOLDER_VERSION,
 				'script'  => [
-					'src'                => D5_CONST_PLACEHOLDER_URL . 'scripts/bundle.js',
+					'src'                => D5_CONST_PLACEHOLDER_URL.'scripts/bundle.js',
 					'deps'               => [
 						'divi-module-library',
 						'divi-vendor-wp-hooks',
@@ -87,7 +87,7 @@ add_action(
 				'name'    => 'D5_HANDLE_PLACEHOLDER-builder-vb-bundle-style',
 				'version' => D5_CONST_PLACEHOLDER_VERSION,
 				'style'   => [
-					'src'                => D5_CONST_PLACEHOLDER_URL . 'styles/vb-bundle.css',
+					'src'                => D5_CONST_PLACEHOLDER_URL.'styles/vb-bundle.css',
 					'deps'               => [],
 					'enqueue_top_window' => false,
 					'enqueue_app_window' => true,
@@ -105,10 +105,10 @@ add_action(
 add_action(
 	'wp_enqueue_scripts',
 	function () {
-		if ( file_exists( D5_CONST_PLACEHOLDER_PATH . 'styles/bundle.css' ) ) {
+		if (file_exists(D5_CONST_PLACEHOLDER_PATH.'styles/bundle.css')) {
 			wp_enqueue_style(
 				'D5_HANDLE_PLACEHOLDER-bundle-style',
-				D5_CONST_PLACEHOLDER_URL . 'styles/bundle.css',
+				D5_CONST_PLACEHOLDER_URL.'styles/bundle.css',
 				[],
 				D5_CONST_PLACEHOLDER_VERSION
 			);

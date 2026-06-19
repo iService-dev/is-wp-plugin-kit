@@ -7,8 +7,8 @@
 
 namespace D5_NS_PLACEHOLDER\Divi5\Modules\ExampleModule\ExampleModuleTrait;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	die( 'Direct access forbidden.' );
+if (!defined('ABSPATH')) {
+	die('Direct access forbidden.');
 }
 
 use ET\Builder\FrontEnd\Module\Style;
@@ -40,7 +40,7 @@ trait ModuleStylesTrait {
 	 *      @type ModuleElements $elements    ModuleElements instance.
 	 * }
 	 */
-	public static function module_styles( $args ) {
+	public static function module_styles($args) {
 		$attrs    = $args['attrs'] ?? [];
 		$elements = $args['elements'];
 		$settings = $args['settings'] ?? [];

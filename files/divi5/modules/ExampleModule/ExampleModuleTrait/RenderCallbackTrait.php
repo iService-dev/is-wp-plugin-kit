@@ -7,8 +7,8 @@
 
 namespace D5_NS_PLACEHOLDER\Divi5\Modules\ExampleModule\ExampleModuleTrait;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	die( 'Direct access forbidden.' );
+if (!defined('ABSPATH')) {
+	die('Direct access forbidden.');
 }
 
 // phpcs:disable ET.Sniffs.ValidVariableName.UsedPropertyNotSnakeCase -- WP uses camelCase in \WP_Block_Parser_Block.
@@ -36,9 +36,9 @@ trait RenderCallbackTrait {
 	 *
 	 * @return string The module's rendered HTML.
 	 */
-	public static function render_callback( $attrs, $content, $block, $elements ) {
+	public static function render_callback($attrs, $content, $block, $elements) {
 		// Front-End script for this module (compiled to scripts/module.js).
-		wp_enqueue_script( 'D5_HANDLE_PLACEHOLDER-frontend', D5_CONST_PLACEHOLDER_URL . 'scripts/module.js', [], D5_CONST_PLACEHOLDER_VERSION, true );
+		wp_enqueue_script('D5_HANDLE_PLACEHOLDER-frontend', D5_CONST_PLACEHOLDER_URL.'scripts/module.js', [], D5_CONST_PLACEHOLDER_VERSION, true);
 
 		// Title.
 		$title = $elements->render(
@@ -63,7 +63,7 @@ trait RenderCallbackTrait {
 			]
 		);
 
-		$parent       = BlockParserStore::get_parent( $block->parsed_block['id'], $block->parsed_block['storeInstance'] );
+		$parent       = BlockParserStore::get_parent($block->parsed_block['id'], $block->parsed_block['storeInstance']);
 		$parent_attrs = $parent->attrs ?? [];
 
 		return Module::render(
@@ -78,9 +78,9 @@ trait RenderCallbackTrait {
 				'id'                  => $block->parsed_block['id'],
 				'name'                => $block->block_type->name,
 				'moduleCategory'      => $block->block_type->category,
-				'classnamesFunction'  => [ ExampleModule::class, 'module_classnames' ],
-				'stylesComponent'     => [ ExampleModule::class, 'module_styles' ],
-				'scriptDataComponent' => [ ExampleModule::class, 'module_script_data' ],
+				'classnamesFunction'  => [ExampleModule::class, 'module_classnames'],
+				'stylesComponent'     => [ExampleModule::class, 'module_styles'],
+				'scriptDataComponent' => [ExampleModule::class, 'module_script_data'],
 				'parentAttrs'         => $parent_attrs,
 				'parentId'            => $parent->id ?? '',
 				'parentName'          => $parent->blockName ?? '',
@@ -102,7 +102,7 @@ trait RenderCallbackTrait {
 								'class' => 'is_example_module__inner',
 							],
 							'childrenSanitizer' => 'et_core_esc_previously',
-							'children'          => $title . $content_html,
+							'children'          => $title.$content_html,
 						]
 					),
 				],

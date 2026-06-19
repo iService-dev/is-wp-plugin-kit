@@ -7,8 +7,8 @@
 
 namespace D5_NS_PLACEHOLDER\Divi5\Modules\ExampleModule\ExampleModuleTrait;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	die( 'Direct access forbidden.' );
+if (!defined('ABSPATH')) {
+	die('Direct access forbidden.');
 }
 
 trait CustomCssTrait {
@@ -22,6 +22,6 @@ trait CustomCssTrait {
 	 * @since ??
 	 */
 	public static function custom_css() {
-		return \WP_Block_Type_Registry::get_instance()->get_registered( 'is/example-module' )->customCssFields;
+		return \WP_Block_Type_Registry::get_instance()->get_registered('is/example-module')->customCssFields;
 	}
 }

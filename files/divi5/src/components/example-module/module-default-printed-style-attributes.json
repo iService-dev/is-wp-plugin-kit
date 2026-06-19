@@ -1,29 +1,29 @@
 {
-  "_comment": "Default printed style attributes for the Example Module.",
-  "module": {
-    "decoration": {
-      "background": {
-        "desktop": {
-          "value": {
-            "color": "#ecf4f7"
-          }
-        }
-      }
-    }
-  },
-  "title": {
-    "decoration": {
-      "font": {
-        "font": {
-          "desktop": {
-            "value": {
-              "size": "26px",
-              "lineHeight": "1.2em",
-              "weight": "600"
-            }
-          }
-        }
-      }
-    }
-  }
+	"_comment": "Default printed style attributes for the Example Module.",
+	"module": {
+		"decoration": {
+			"background": {
+				"desktop": {
+					"value": {
+						"color": "#ecf4f7"
+					}
+				}
+			}
+		}
+	},
+	"title": {
+		"decoration": {
+			"font": {
+				"font": {
+					"desktop": {
+						"value": {
+							"size": "26px",
+							"lineHeight": "1.2em",
+							"weight": "600"
+						}
+					}
+				}
+			}
+		}
+	}
 }

@@ -1,11 +1,11 @@
 {
-  "name": "iservice/D5_PKG_PLACEHOLDER",
-  "description": "Divi 5 module bundle for an iService WordPress plugin.",
-  "type": "wordpress-plugin",
-  "autoload": {
-    "psr-4": {
-      "D5_NS_ESCAPED_PLACEHOLDER\\Divi5\\Modules\\": "modules/"
-    }
-  },
-  "require": {}
+	"name": "iservice/D5_PKG_PLACEHOLDER",
+	"description": "Divi 5 module bundle for an iService WordPress plugin.",
+	"type": "wordpress-plugin",
+	"autoload": {
+		"psr-4": {
+		"D5_NS_ESCAPED_PLACEHOLDER\\Divi5\\Modules\\": "modules/"
+		}
+	},
+	"require": {}
 }

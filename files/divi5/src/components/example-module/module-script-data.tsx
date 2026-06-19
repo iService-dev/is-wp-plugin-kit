@@ -1,6 +1,6 @@
 import React, {
-  Fragment,
-  ReactElement,
+	Fragment,
+	ReactElement,
 } from 'react';
 
 import { ModuleScriptDataProps } from '@divi/module';
@@ -16,11 +16,11 @@ import { ExampleModuleAttrs } from './types';
  * @returns {ReactElement}
  */
 export const ModuleScriptData = ({
-  elements,
+	elements,
 }: ModuleScriptDataProps<ExampleModuleAttrs>): ReactElement => (
-  <Fragment>
-    {elements.scriptData({
-      attrName: 'module',
-    })}
-  </Fragment>
+	<Fragment>
+		{elements.scriptData({
+		attrName: 'module',
+		})}
+	</Fragment>
 );

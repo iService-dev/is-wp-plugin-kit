@@ -1,11 +1,10 @@
 // WordPress dependencies.
 import { __ } from '@wordpress/i18n';
-
 import metadata from './module.json';
 
 const customCssFields = metadata.customCssFields as Record<
-  'title' | 'content',
-  { subName: string; selector?: string; selectorSuffix: string; label: string }
+	'title' | 'content',
+	{ subName: string; selector?: string; selectorSuffix: string; label: string }
 >;
 
 customCssFields.title.label   = __('Title', 'D5_TEXTDOMAIN_PLACEHOLDER');

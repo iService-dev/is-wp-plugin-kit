@@ -20,36 +20,36 @@ import { ModuleScriptData } from './module-script-data';
  * @returns {ReactElement}
  */
 export const ExampleModuleEdit = (props: ExampleModuleEditProps): ReactElement => {
-  const {
-    attrs,
-    elements,
-    id,
-    name,
-  } = props;
+	const {
+		attrs,
+		elements,
+		id,
+		name,
+	} = props;
 
-  return (
-    <ModuleContainer
-      attrs={attrs}
-      elements={elements}
-      id={id}
-      name={name}
-      stylesComponent={ModuleStyles}
-      classnamesFunction={moduleClassnames}
-      scriptDataComponent={ModuleScriptData}
-    >
-      {elements.styleComponents({
-        attrName: 'module',
-      })}
-      <div className="is_example_module__inner">
-        {elements.render({
-          attrName: 'title',
-        })}
-        <div className="is_example_module__content">
-          {elements.render({
-            attrName: 'content',
-          })}
-        </div>
-      </div>
-    </ModuleContainer>
-  );
+	return (
+		<ModuleContainer
+			attrs={attrs}
+			elements={elements}
+			id={id}
+			name={name}
+			stylesComponent={ModuleStyles}
+			classnamesFunction={moduleClassnames}
+			scriptDataComponent={ModuleScriptData}
+		>
+			{elements.styleComponents({
+				attrName: 'module',
+			})}
+			<div className="is_example_module__inner">
+				{elements.render({
+				attrName: 'title',
+				})}
+				<div className="is_example_module__content">
+				{elements.render({
+					attrName: 'content',
+				})}
+				</div>
+			</div>
+		</ModuleContainer>
+	);
 };

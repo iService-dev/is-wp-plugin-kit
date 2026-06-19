@@ -12,9 +12,9 @@ import { ExampleModuleAttrs } from './types';
  * @param {ModuleClassnamesParams<ExampleModuleAttrs>} param0 Function parameters.
  */
 export const moduleClassnames = ({
-  classnamesInstance,
-  attrs,
+	classnamesInstance,
+	attrs,
 }: ModuleClassnamesParams<ExampleModuleAttrs>): void => {
-  // Text Options (text orientation / color classnames).
-  classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text));
+	// Text Options (text orientation / color classnames).
+	classnamesInstance.add(textOptionsClassnames(attrs?.module?.advanced?.text));
 };

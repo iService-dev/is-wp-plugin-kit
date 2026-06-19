@@ -6,13 +6,13 @@
 // Front-End behaviour inside the constructor.
 
 class ExampleModule {
-  constructor(root: HTMLElement) {
-    root.classList.add('is_example_module--ready');
-  }
+	constructor(root: HTMLElement) {
+		root.classList.add('is_example_module--ready');
+	}
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll<HTMLElement>('.is_example_module').forEach((el) => {
-    new ExampleModule(el);
-  });
+	document.querySelectorAll<HTMLElement>('.is_example_module').forEach((el) => {
+		new ExampleModule(el);
+	});
 });

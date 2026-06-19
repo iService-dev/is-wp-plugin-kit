@@ -1,50 +1,50 @@
 {
-  "_comment": "Default render attributes for the Example Module (used on both VB and FE).",
-  "module": {
-    "meta": {
-      "adminLabel": {
-        "desktop": {
-          "value": "IS Example Module"
-        }
-      }
-    },
-    "advanced": {
-      "text": {
-        "text": {
-          "desktop": {
-            "value": {
-              "color": "dark"
-            }
-          }
-        }
-      }
-    },
-    "decoration": {
-      "spacing": {
-        "desktop": {
-          "value": {
-            "padding": {
-              "top": "30px",
-              "right": "30px",
-              "bottom": "30px",
-              "left": "30px"
-            }
-          }
-        }
-      }
-    }
-  },
-  "title": {
-    "decoration": {
-      "font": {
-        "font": {
-          "desktop": {
-            "value": {
-              "headingLevel": "h2"
-            }
-          }
-        }
-      }
-    }
-  }
+	"_comment": "Default render attributes for the Example Module (used on both VB and FE).",
+	"module": {
+		"meta": {
+			"adminLabel": {
+				"desktop": {
+					"value": "IS Example Module"
+				}
+			}
+		},
+		"advanced": {
+			"text": {
+				"text": {
+					"desktop": {
+						"value": {
+							"color": "dark"
+						}
+					}
+				}
+			}
+		},
+		"decoration": {
+			"spacing": {
+				"desktop": {
+					"value": {
+						"padding": {
+							"top": "30px",
+							"right": "30px",
+							"bottom": "30px",
+							"left": "30px"
+						}
+					}
+				}
+			}
+		}
+	},
+	"title": {
+		"decoration": {
+			"font": {
+				"font": {
+					"desktop": {
+						"value": {
+							"headingLevel": "h2"
+						}
+					}
+				}
+			}
+		}
+	}
 }
