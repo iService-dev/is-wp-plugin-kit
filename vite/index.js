@@ -7,6 +7,29 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// vite-plugin-static-copy v4 always keeps the matched path, so "assets/src/images/a.png" with
+// dest "css/images" would land in "css/images/assets/src/images/a.png". The kit has always
+// flattened matches into `dest` (the v3 default), so keep that layout. A string/function `rename`
+// keeps its v3 meaning (file name inside `dest`); an object `rename` is passed through as-is, so
+// `rename: { stripBase: 0 }` opts in to keeping the folder structure.
+function flattenTarget(target) {
+  const { rename } = target;
+  if (rename === undefined) return { ...target, rename: { stripBase: true } };
+  if (typeof rename === "string") {
+    return { ...target, rename: { stripBase: true, name: rename } };
+  }
+  if (typeof rename === "function") {
+    return {
+      ...target,
+      rename: async (...args) => {
+        const result = await rename(...args);
+        return typeof result === "string" ? { stripBase: true, name: result } : result;
+      },
+    };
+  }
+  return target;
+}
+
 export function wpPluginKitVite(userOptions = {}) {
   function makeInputs() {
     const files = fg.sync(
@@ -36,7 +59,8 @@ export function wpPluginKitVite(userOptions = {}) {
   }
 
   const staticCopyTargets = userOptions.staticCopyTargets ?? [
-    { src: "assets/src/images/*", dest: "css/images" },
+    // `**/*` + stripBase 3 keeps sub-folders of assets/src/images (e.g. css/images/icons/…).
+    { src: "assets/src/images/**/*", dest: "css/images", rename: { stripBase: 3 } },
     { src: "assets/src/fonts/**/*.{eot,woff,woff2,ttf}", dest: "css/fonts" },
     { src: "assets/src/legacy/css/**/*.css", dest: "css" },
     { src: "assets/src/legacy/js/**/*.js", dest: "js" },
@@ -44,10 +68,12 @@ export function wpPluginKitVite(userOptions = {}) {
 
   // Filter out targets where source path doesn't exist or has no files
   const cwd = userOptions.cwd ?? process.cwd();
-  const validTargets = staticCopyTargets.filter((target) => {
-    const files = fg.sync(target.src, { cwd });
-    return files.length > 0;
-  });
+  const validTargets = staticCopyTargets
+    .filter((target) => {
+      const files = fg.sync(target.src, { cwd });
+      return files.length > 0;
+    })
+    .map(flattenTarget);
 
   return defineConfig({
     base: "./",

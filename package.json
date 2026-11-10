@@ -21,25 +21,28 @@
     "is-wp-plugin-kit": "./bin/is-wp-plugin-kit.js"
   },
   "dependencies": {
-    "@types/jquery": "^3.5.33",
+    "@types/jquery": "^3.5.34",
     "@types/node": "^25.9.1",
     "@types/sizzle": "^2.3.0",
     "autoprefixer": "^10.4.21",
     "chokidar-cli": "^3.0.0",
-    "concurrently": "^8.2.2",
+    "concurrently": "^10.0.6",
     "fast-glob": "^3.3.3",
     "glob": "^13.0.6",
-    "oxlint": "~1.68.0",
+    "oxlint": "~1.91.0",
     "po2mo": "^2.0.7",
     "sass-embedded": "^1.92.0",
     "stylelint": "^17.13.0",
     "stylelint-config-standard-scss": "^17.0.0",
     "stylelint-order": "^8.1.1",
     "stylelint-scss": "^7.2.0",
-    "vite-plugin-static-copy": "^3.1.3"
+    "vite-plugin-static-copy": "^4.1.1"
   },
   "peerDependencies": {
     "vite": ">=7.0.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   },
   "keywords": [
     "wordpress",

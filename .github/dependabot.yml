@@ -17,6 +17,11 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      # WordPress core still ships jQuery 3.7.x — keep the typings on v3 until core moves to jQuery 4.
+      - dependency-name: "@types/jquery"
+        update-types:
+          - "version-update:semver-major"
     open-pull-requests-limit: 5
     commit-message:
       prefix: "deps"
