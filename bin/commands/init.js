@@ -194,7 +194,7 @@ export async function runInit() {
 			},
 			devDependencies: {
 				'@iservice-dev/is-wp-plugin-kit': toolkitVersion,
-				vite: '^7.1.7',
+				vite: '^8.3.0',
 			},
 		};
 

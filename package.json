@@ -39,7 +39,7 @@
     "vite-plugin-static-copy": "^4.1.1"
   },
   "peerDependencies": {
-    "vite": ">=7.0.0"
+    "vite": "^7.0.0 || ^8.0.0"
   },
   "engines": {
     "node": ">=22.12.0"

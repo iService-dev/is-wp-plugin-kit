@@ -75,6 +75,11 @@ export function wpPluginKitVite(userOptions = {}) {
     })
     .map(flattenTarget);
 
+  const inputs = makeInputs();
+  const scssEntries = new Set(
+    Object.keys(inputs).filter((key) => key.startsWith("css/")).map((key) => key.slice(4))
+  );
+
   return defineConfig({
     base: "./",
 
@@ -94,7 +99,7 @@ export function wpPluginKitVite(userOptions = {}) {
       target: "esnext",
       cssCodeSplit: true,
       rollupOptions: {
-        input: makeInputs(),
+        input: inputs,
 		external: ['jquery', 'select2'],
         output: {
           intro: "(function(){",
@@ -113,6 +118,11 @@ export function wpPluginKitVite(userOptions = {}) {
             if (fileName.endsWith(".css") || ext === "css") {
               const baseName = fileName.replace(".css", "");
               if (baseName.startsWith("css/")) return `${baseName}.css`;
+              // CSS imported by a TS entry is named after that entry. When an SCSS entry has the
+              // same name, Vite 7 emitted the SCSS first (→ "x.css") and the import second (→ "x2.css");
+              // Vite 8 emits them the other way round. Name the import explicitly so the SCSS entry
+              // keeps "css/x.css" (loaded by name) and the import stays reachable via the manifest.
+              if (scssEntries.has(baseName)) return `css/${baseName}2.css`;
               return `css/${baseName}.css`;
             }
 
