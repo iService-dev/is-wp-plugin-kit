@@ -58,6 +58,8 @@ export default wpPluginKitVite({
 $this->vitePort = 5500;  // Change this
 ```
 
+**Port convention:** general plugins can run together on one site, so each gets its own port (next free number from 5173 up). Customer plugins never run together, so they all share `5500` (the `init` default).
+
 ### PHP Customization
 
 All customization points in the PHP template files are marked with `TODO` comments. Check:
