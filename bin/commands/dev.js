@@ -1,17 +1,16 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
+import fg from 'fast-glob';
 
 export async function runDev() {
-	const { globSync } = await import('glob');
-
 	const commands = ['"vite"'];
 
-	const tsFiles = globSync('assets/src/ts/**/*.ts');
+	const tsFiles = fg.sync('assets/src/ts/**/*.ts');
 	if (tsFiles.length > 0) {
 		commands.push("\"chokidar 'assets/src/ts/**/*.ts' -c 'oxlint assets/src/ts'\"");
 	}
 
-	const scssFiles = globSync('assets/src/scss/**/*.scss');
+	const scssFiles = fg.sync('assets/src/scss/**/*.scss');
 	if (scssFiles.length > 0) {
 		commands.push(
 			'"chokidar \'assets/src/scss/**/*.scss\' -c \'stylelint \\"assets/src/scss/**/*.scss\\" --fix\'"'

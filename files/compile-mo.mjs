@@ -1,11 +1,7 @@
-import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import fs from 'node:fs/promises'
-import { execFile } from 'node:child_process'
-import { promisify } from 'node:util'
 import fg from 'fast-glob'
-
-const execFileP = promisify(execFile);
+import gettextParser from 'gettext-parser'
 
 const root = process.cwd();
 
@@ -31,11 +27,13 @@ for (const rel of poFiles) {
   const outPath = path.join(outFullDir, outBase)
   await fs.mkdir(outFullDir, { recursive: true })
 
-  const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx'
-  await execFileP(npxCmd, ['po2mo', inPath])
-
-  const generatedPath = path.join(srcDir, outSubdir, locale + '.mo')
-  await fs.rename(generatedPath, outPath)
+  let mo
+  try {
+    mo = gettextParser.mo.compile(gettextParser.po.parse(await fs.readFile(inPath)))
+  } catch (err) {
+    throw new Error(`Invalid .po file ${path.relative(root, inPath)}: ${err.message}`, { cause: err })
+  }
+  await fs.writeFile(outPath, mo)
 
   console.log(`✔ ${rel} -> ${path.relative(root, outPath)} (with prefix ${pluginName}-)`)
 }
