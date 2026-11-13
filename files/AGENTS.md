@@ -1,6 +1,6 @@
 # iService WordPress plugin – agent guidelines
 
-These rules apply to every agent; plugin-specific notes are in `PLUGIN.md`.
+These rules apply to every agent - don't edit this file; plugin-specific notes are in `PLUGIN.md`.
 Read `PLUGIN.md` too if it exists.
 
 If a rule here conflicts with a request, stop and ask instead of working
@@ -25,7 +25,7 @@ around it.
 │   ├── Frontend/            # frontend classes (auto-instantiated)
 │   ├── Api/                 # REST controllers
 │   └── Divi/                # Divi 4 modules (legacy, only for existing modules)
-├── divi5/                   # native Divi 5 modules (add with `npx is-wp-plugin-kit add-divi5`)
+├── divi5/                   # native Divi 5 modules (see section 7)
 ├── assets/src/              # ts/, scss/, images/, fonts/, l10n/ – sources only
 ├── assets/dist/             # build output – never edit, never commit
 └── languages/               # compiled .mo – generated; never edit, never commit
@@ -46,10 +46,13 @@ around it.
   No jQuery and no plain JS/CSS in new code. `assets/src/legacy/` only exists in older plugins.
 - Enqueue only through the base plugin's `Asset_Manager_Service`
   (`enqueue_js('name')`, `enqueue_css('name')`), never with hard-coded
-  URLs to `assets/`.
+  URLs to `assets/`. Exception: Divi 5 modules in `divi5/` load their files
+  through `divi5/bootstrap.php` and the module's render callback; keep that
+  as it is.
 - Load assets **only where they are needed** (the page, admin screen or
-  module that uses them). Never load admin CSS/JS on the frontend. 
-  For user-specific assets, check a capability (current_user_can()), not is_user_logged_in().
+  module that uses them). Never load admin CSS/JS on the frontend.
+  For user-specific assets, check a capability (`current_user_can()`), not
+  `is_user_logged_in()`.
 - No external CDNs, fonts or scripts. Everything ships with the plugin.
 - No placeholder or test media in the repo.
   Images in `assets/src/images/` must be optimised; keep them under
@@ -59,17 +62,19 @@ around it.
 
 - Every PHP file starts with `if (!defined('ABSPATH')) exit;` unless it only
   declares a namespaced class.
-- **Escape all output** at the point of output
-- **Sanitize all input**
+- **Escape all output** at the point of output. Values used in inline CSS
+  must also be validated (e.g. `sanitize_hex_color()`).
+- **Sanitize all input.**
 - Every state-changing request (forms, AJAX, REST) checks a **nonce** and a
   **capability** (`current_user_can`). REST routes always have a real
   `permission_callback`, never `__return_true` for write routes.
 - Database: `$wpdb->prepare()` for every query with variables.
 - JS: never write untrusted strings with `innerHTML`, `insertAdjacentHTML` or
   jQuery `.html()`. Use `textContent` or create elements.
-- **No site-wide side effects** for a single feature, for example 
-  allowing new upload file types, changing user roles or capabilities, or changing core or other plugins’ behaviour. 
-  If a feature seems to need this, stop and ask a developer.
+- **No site-wide side effects** for a single feature, for example allowing
+  new upload file types, changing user roles or capabilities, or changing
+  core or other plugins' behaviour. If a feature seems to need this, stop and
+  ask a developer.
 - Never commit secrets: API keys, tokens, passwords, customer data, `.env`.
 
 ## 5. Translations
@@ -77,13 +82,13 @@ around it.
 - All user-facing strings in English in the code, wrapped in `__()`,
   `esc_html__()` etc. with the plugin's text domain (see the plugin header
   or `PLUGIN.md`; normally the plugin slug).
-- Translations go into `assets/src/l10n/<locale>.po` (e.g. de_DE.po); `.mo` files are
-  built automatically.
+- Translations go into `assets/src/l10n/<locale>.po` (e.g. `de_DE.po`);
+  `.mo` files are built automatically.
 
 ## 6. Accessibility
 
 - Never remove focus outlines without a visible replacement (`:focus-visible`).
-- Respect user preferences like `prefers-reduced-motion`
+- Respect user preferences like `prefers-reduced-motion`.
 - Anything that moves or loops on its own needs a pause/stop control.
 - Interactive elements are real `<button>`/`<a>` elements, reachable and
   usable with the keyboard, with accessible names.
@@ -95,12 +100,13 @@ around it.
   `npx @iservice-dev/is-wp-plugin-kit add-divi5`).
 - Every module is self-contained in its own folder and doesn't depend on
   other modules.
-- Front-end scripts/styles only load when the module is on the page.
+- Front-end scripts only load when the module is on the page. Exception for
+  now: the small `divi5/styles/bundle.css` loads on every page.
 - **Where content is stored is a developer decision.** Divi saves module
   content inside the page. That's fine for layout and visual settings. Stop and
   ask a developer before building if the content:
-  - is a list of items (events, FAQs, …)
-  - should be searchable, filterable or have its own URL,
+  - is a list of items (events, FAQs, …),
+  - should be searchable, filterable or have its own URL.
 - If the decision is "store it in Divi for now", build the module so it can
   switch later: the render code gets its items from one function
   (`get_items()`), and can be replaced easily. Write the decision in the pull request.
@@ -134,7 +140,7 @@ npm run build      # production build: lint, Vite, .mo, divi5/
   release.
 - Never commit `node_modules/`, `vendor/`, `assets/dist/`, `languages/*.mo`,
   build output or editor files.
-- Every pull request describes: what changed, and ideally how it was tested
+- Every pull request describes what changed and, ideally, how it was tested.
 
 ## 11. When to stop and ask a developer
 
