@@ -42,7 +42,7 @@ jobs:
         if: steps.check_composer.outputs.exists == 'true'
         uses: php-actions/composer@v6
         with:
-          php_version: "8.2"
+          php_version: "8.3"
           args: --no-dev --prefer-dist --optimize-autoloader
 
       - name: Check for Divi 5 module

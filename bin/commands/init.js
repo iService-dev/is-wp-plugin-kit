@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import readline from 'node:readline';
+import { execFileSync } from 'node:child_process';
 import { copy } from '../utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,9 +12,9 @@ const require = createRequire(import.meta.url);
 const selfPkg = require('../../package.json');
 
 const toolkitVersion = `^${selfPkg.version}`;
-const defaultWpVersion = '6.5';
+const defaultWpVersion = '7.1';
 const defaultPhpVersion = '8.3';
-const defaultBaseVersion = '1.2.2';
+const defaultBaseVersion = '1.2.57';
 
 function prompt(question) {
 	const rl = readline.createInterface({
@@ -99,6 +100,9 @@ export async function runInit() {
 	const requiredBaseVersion = await promptVersion(
 		`Required IS Base Plugin version (default: ${defaultBaseVersion}): `,
 		defaultBaseVersion
+	);
+	const addDivi5 = /^y(es)?$/i.test(
+		(await prompt('Add Divi 5 module support (divi5/)? (y/N): ')).trim()
 	);
 
 	console.log('\n');
@@ -213,8 +217,6 @@ export async function runInit() {
 		'assets/src/fonts',
 		'assets/src/images',
 		'assets/src/l10n',
-		'assets/src/legacy/js',
-		'assets/src/legacy/css',
 		'includes/lib/Admin',
 		'includes/lib/Core',
 		'includes/lib/Core/Helpers',
@@ -315,11 +317,59 @@ export async function runInit() {
 	console.log('✓ Created includes/lib/Core/Config.php');
 
 	// ------------------------------------------
+	// 12) agent guidelines
+	// AGENTS.md belongs to the kit (shared rules, overwritten on update).
+	// PLUGIN.md and CLAUDE.md belong to the plugin and are never overwritten.
+	// ------------------------------------------
+	copy('AGENTS.md');
+
+	if (!fs.existsSync(path.join(root, 'CLAUDE.md'))) {
+		copy('CLAUDE.md');
+	} else {
+		console.log('↺ CLAUDE.md already exists – skipped');
+	}
+
+	const pluginMdPath = path.join(root, 'PLUGIN.md');
+	if (!fs.existsSync(pluginMdPath)) {
+		const pluginMdContent = fs
+			.readFileSync(path.join(__dirname, '../../files/PLUGIN.md'), 'utf-8')
+			.replace(/\[Plugin Name Placeholder\]/g, pluginName)
+			.replace(/\[Plugin Description Placeholder\]/g, pluginDescr || '-')
+			.replace(/\[plugin-slug-placeholder\]/g, pluginSlug)
+			.replace(/\[text-domain-placeholder\]/g, textDomain)
+			.replace(/\[namespace-placeholder\]/g, namespace);
+
+		fs.writeFileSync(pluginMdPath, pluginMdContent);
+		console.log('✓ Created PLUGIN.md');
+	} else {
+		console.log('↺ PLUGIN.md already exists – skipped');
+	}
+
+	// ------------------------------------------
 	console.log('\n🎉 Project initialized successfully!\n');
 	console.log(`Plugin: ${pluginName}`);
 	console.log(`Slug: ${pluginSlug}`);
 	console.log(`Namespace: ${namespace}`);
 	console.log(`Text Domain: ${textDomain}`);
 	console.log(`Vite Port: ${vitePort}\n`);
+
+	// ------------------------------------------
+	// 13) optional Divi 5 module bundle
+	// Runs the add-divi5 command as its own process (it ends with process.exit).
+	// ------------------------------------------
+	if (addDivi5) {
+		const cli = path.resolve(__dirname, '../is-wp-plugin-kit.js');
+		try {
+			execFileSync(
+				process.execPath,
+				[cli, 'add-divi5', '--namespace', namespace, '--slug', pluginSlug, '--text-domain', textDomain, '--yes'],
+				{ cwd: root, stdio: 'inherit' }
+			);
+		} catch {
+			console.error('❌ Adding divi5/ failed. Run `npx @iservice-dev/is-wp-plugin-kit add-divi5` manually.');
+			process.exit(1);
+		}
+	}
+
 	process.exit(0);
 }

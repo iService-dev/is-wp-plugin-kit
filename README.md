@@ -15,6 +15,9 @@ This sets up your complete plugin structure with:
 - Folder structure (`assets/`, `includes/`, `languages/`)
 - Template files (`Config.php`, `Plugin.php`, `de_DE.po`)
 - `vite.config.ts` with default settings
+- Agent guidelines: `AGENTS.md` (shared iService rules, owned by the kit — edit
+  `files/AGENTS.md` here, not in the plugin), `PLUGIN.md` (plugin-specific
+  notes, owned by the plugin) and `CLAUDE.md` (imports both for Claude Code)
 
 ### 2. Install Dependencies
 
@@ -29,6 +32,8 @@ npm run dev
 ```
 
 ### Optional: Add a Divi 5 module
+
+`init` asks at the end whether to add Divi 5 support. To add it to an existing plugin later:
 
 ```bash
 npx @iservice-dev/is-wp-plugin-kit add-divi5
@@ -102,7 +107,7 @@ your-plugin/
 │   │   ├── images/      # Images
 │   │   ├── fonts/       # Fonts
 │   │   ├── l10n/        # Translation files (.po)
-│   │   └── legacy/      # Legacy JS/CSS
+│   │   └── legacy/      # Legacy JS/CSS (older plugins only, not created by init)
 │   └── dist/            # Built files (auto-generated)
 ├── includes/
 │   └── lib/
