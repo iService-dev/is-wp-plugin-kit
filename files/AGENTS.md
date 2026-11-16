@@ -270,7 +270,11 @@ classes of either plugin.
   field, option or hook is wired wrongly, wire it correctly. No "use A,
   otherwise B" logic that hides the problem.
 - No magic numbers: name them as constants or settings.
-- Clear names instead of comments. Comment only what the code can't say itself.
+- **No comments by default.** Use clear names and small functions instead.
+  Write a comment only if it is really necessary, i.e. it explains a reason
+  the code can't show (a WordPress or plugin quirk, a workaround with a
+  link). No comments that repeat what the code does, no section dividers,
+  no docblocks that only restate names and types.
 
 ## 10. Build and run
 
