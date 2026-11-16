@@ -1,6 +1,6 @@
 # iService WordPress plugin – agent guidelines
 
-These rules apply to every agent - don't edit this file; plugin-specific notes are in `PLUGIN.md`.
+These rules apply to every agent. Don't edit this file; plugin-specific notes are in `PLUGIN.md`.
 Read `PLUGIN.md` too if it exists.
 
 If a rule here conflicts with a request, stop and ask instead of working
@@ -25,7 +25,7 @@ around it.
 │   ├── Frontend/            # frontend classes (auto-instantiated)
 │   ├── Api/                 # REST controllers
 │   └── Divi/                # Divi 4 modules (legacy, only for existing modules)
-├── divi5/                   # native Divi 5 modules (see section 7)
+├── divi5/                   # native Divi 5 modules (see section 8)
 ├── assets/src/              # ts/, scss/, images/, fonts/, l10n/ – sources only
 ├── assets/dist/             # build output – never edit, never commit
 └── languages/               # compiled .mo – generated; never edit, never commit
@@ -39,11 +39,58 @@ around it.
   `define()`.
 - Don't put new top-level folders or files in the plugin root without a
   reason stated in the pull request.
+- **Models are only used by services.** Classes in `Admin/`, `Frontend/`,
+  `Api/`, `Divi/` and `divi5/` never call a model directly, only its
+  service in `Core/Services/`. Keep a service even if it only passes calls
+  through to the model. The same applies to the base plugin: use its
+  services, never its models.
+- **Keys are defined once.** Meta keys, option names and field names are
+  constants or name functions in `Core/` (e.g. `Config.php` or the model).
+  Everything else reads and writes them only through getters and setters,
+  never with the raw string.
+- **Post fields go through the base plugin's `Field_Service`.** A plugin
+  registers or filters its own fields there and never builds its own field
+  registry.
+- **Don't change versions.** Never raise the `Version` header; the build
+  does that. Set `$required_base_version` in the main plugin file only to a
+  base plugin version that actually exists.
 
-## 3. Assets
+## 3. Check the base plugin first
+
+Before writing a helper, class, style or script, look in `is-base-plugin`
+(next to this plugin in `wp-content/plugins/`) for something that already
+does it, and use that instead of building your own:
+
+- PHP helpers: `includes/lib/Core/Helpers/`
+- PHP services and classes: `includes/lib/Core/Services/`,
+  `includes/lib/Admin/Settings/` (settings pages and fields)
+- SCSS variables and components: `assets/src/scss/base/`,
+  `assets/src/scss/components/` (cards, tables, buttons, fields, …)
+- TypeScript components: `assets/src/ts/components/`
+
+Never copy code from the base plugin into this plugin. If something is
+missing in the base plugin and would be useful for other plugins too, stop
+and ask a developer whether it belongs there.
+
+## 4. Assets
 
 - Write TypeScript in `assets/src/ts/` and SCSS in `assets/src/scss/`.
   No jQuery and no plain JS/CSS in new code. `assets/src/legacy/` only exists in older plugins.
+- **SCSS is real SCSS, not CSS in a `.scss` file.** Use nesting, `@use`,
+  variables and mixins.
+  - Build it modular: an entry file (e.g. `backend.scss`) only `@use`s
+    partials from `assets/src/scss/components/`. One component per partial,
+    named after the component or mixin inside it (`_settings-form.scss`).
+  - Variables live in `assets/src/scss/base/_variables.scss`. Colours,
+    spacing, radii, font sizes and breakpoints always come from variables
+    (the base plugin's first), never as literal values in components.
+  - Admin and settings pages use the base plugin's styles and components
+    (`is-card`, `is-table`, …) instead of their own look.
+- **TypeScript is modular too.** An entry file (e.g. `backend.ts`) only
+  imports and starts modules. Each feature is its own module in a subfolder
+  of `assets/src/ts/` (e.g. `components/`) that exports typed functions or
+  classes. No globals on `window` unless PHP or another script needs them,
+  and then typed.
 - Enqueue only through the base plugin's `Asset_Manager_Service`
   (`enqueue_js('name')`, `enqueue_css('name')`), never with hard-coded
   URLs to `assets/`. Exception: Divi 5 modules in `divi5/` load their files
@@ -55,19 +102,36 @@ around it.
   `is_user_logged_in()`.
 - No external CDNs, fonts or scripts. Everything ships with the plugin.
 - No placeholder or test media in the repo.
-  Images in `assets/src/images/` must be optimised; keep them under
-  200 KB unless there's a reason.
+  Images in `assets/src/images/` must be optimised; prefer SVG for icons
+  and graphics and WebP for photos, and keep them under 200 KB unless
+  there's a reason.
 
-## 4. Security (non-negotiable)
+## 5. Security (non-negotiable)
 
 - Every PHP file starts with `if (!defined('ABSPATH')) exit;` unless it only
   declares a namespaced class.
 - **Escape all output** at the point of output. Values used in inline CSS
   must also be validated (e.g. `sanitize_hex_color()`).
 - **Sanitize all input.**
-- Every state-changing request (forms, AJAX, REST) checks a **nonce** and a
-  **capability** (`current_user_can`). REST routes always have a real
-  `permission_callback`, never `__return_true` for write routes.
+- Every state-changing request from a logged-in user (forms, AJAX, REST
+  with cookie auth) checks a **nonce** (`X-WP-Nonce` for REST) and a
+  **capability** (`current_user_can`).
+- Endpoints called by another server have no nonce. They check a token
+  sent in a header (never in the URL) with `hash_equals()` and only do
+  what that token is meant for.
+- REST routes always have a real `permission_callback`, never
+  `__return_true` for write routes.
+- **Decide who sees it.** For every admin page, setting, field, notice or
+  tool, decide whether only iService sees it or the customer too, and write
+  the decision in the pull request. Control it only through the base plugin,
+  never with your own e-mail, role or user ID checks:
+  - Admin pages: see "Working with the IS Security plugin" below.
+  - Anything that is not a menu page (a field, a metabox, a notice, a
+    button): check `IS\Base\Core\Helpers\User::current_user_is_iservice()`.
+    Don't use `Security::should_restrict_iservice()` for this: it returns
+    `false` for everyone as soon as the IS Security plugin is active,
+    because that plugin only controls menu pages.
+
 - Database: `$wpdb->prepare()` for every query with variables.
 - JS: never write untrusted strings with `innerHTML`, `insertAdjacentHTML` or
   jQuery `.html()`. Use `textContent` or create elements.
@@ -77,15 +141,97 @@ around it.
   ask a developer.
 - Never commit secrets: API keys, tokens, passwords, customer data, `.env`.
 
-## 5. Translations
+### Working with the IS Security plugin
+
+The IS Security plugin is optional. The plugin must work the same without
+it, so never call its classes directly; only use the hooks below and the
+base plugin.
+
+- **Menu pages must be in the security catalog**, otherwise the customer
+  can't restrict them and they can't inherit rules from their parent.
+  - Settings pages go under the iService menu with `Subpage::register()`.
+    They are added to the catalog automatically and inherit the iService
+    rule (`who_type` `inherit`). Pass the last parameter `$security` only to
+    override that, e.g. `['who_type' => 'all']`.
+  - A plugin with its own top-level menu (needs a reason in the pull
+    request) registers it and every submenu through the filter
+    `is_security/backend/catalog`: one group with `area`, `source` and
+    `entries` (`slug`, `parent`, `label`, `kind` `group`/`child`,
+    `who_type`, `locked`). Use `IS\Base\Admin\Settings\Core\Settings::register_security_catalog()`
+    as the template.
+- **Settings show up readable in the activity log.** The log reads
+  `label` and `log` from `register_setting()`. Use the base plugin's
+  `Setting_*` field classes and always pass the named argument `log`, e.g.
+  `log: ['source' => $this->config->pluginName, 'area' => __('API Settings', $this->config->pluginName)]`.
+  `label` defaults to the field label; set it only if that isn't clear
+  enough on its own.
+  If you call `register_setting()` yourself, pass `label` and `log` the
+  same way.
+- **Secret options are masked** in the log only if their name contains
+  `key`, `secret`, `token`, `pass`, `salt`, `license` or `api`. Name
+  options that hold secrets accordingly.
+- Requests that must reach the site without passing the access rules
+  (admin-ajax, admin-post, cron and REST already do) go through the filter
+  `is_security/access/bypass_paths`. Stop and ask a developer before adding
+  one.
+
+## 6. Translations
 
 - All user-facing strings in English in the code, wrapped in `__()`,
   `esc_html__()` etc. with the plugin's text domain (see the plugin header
   or `PLUGIN.md`; normally the plugin slug).
 - Translations go into `assets/src/l10n/<locale>.po` (e.g. `de_DE.po`);
   `.mo` files are built automatically.
+- `.po` files use CRLF line endings. Keep them when editing, otherwise the
+  whole file shows up in the diff.
+- The plugin header must contain `Domain Path: /languages`. Without it,
+  translations stay English from WordPress 6.7 on.
+- Strings in TypeScript are translated in PHP and passed to the script with
+  `Asset_Manager_Service::localize()`. Don't hard-code user-facing text in
+  TypeScript.
 
-## 6. Accessibility
+### Working with WPML and the IS WPML plugin
+
+Many sites run WPML, and the IS WPML plugin handles fields in custom
+tables, which WPML itself doesn't know. Both are optional: the plugin must
+work without them. Use only WPML's own filters (`wpml_object_id`,
+`wpml_element_language_details`, …) and the `is/wpml/*` hooks, never the
+classes of either plugin.
+
+- **Every new field gets a deliberate translation mode**, and you write the
+  decision in the pull request:
+  - `ignore`: the translation starts empty.
+  - `copy`: copied and kept in sync, locked in translations.
+  - `copy_once`: copied when the translation is created, then free.
+  - `translate`: part of the WPML translation job (text and numbers only).
+- **Post meta** (`wp_postmeta`) is set in WPML's custom field translation.
+  With "don't translate", Meta Box hides the field in translations
+  completely.
+- **Fields in custom tables** are registered in the base plugin's
+  `Field_Service` (see section 2) and set their default mode in the field
+  config with `'translation' => 'copy'` etc. The customer can change it on
+  the IS WPML settings page. A column that holds post or term IDs without
+  being a Meta Box `post`/`taxonomy` field declares it with
+  `'translation_ref' => 'post:<post_type>'` or `'term:<taxonomy>'`.
+- **No own copy or sync logic for translations** (on `save_post`, on a new
+  translation, on a finished job). The IS WPML plugin does that. Follow-up
+  work such as clearing caches hooks into `is/wpml/after_copy` or
+  `is/wpml/after_job_applied`.
+- **Fields rendered without Meta Box** ask
+  `apply_filters('is/wpml/field_locked', false, '<table>.<column>', $post_id)`.
+  A locked field is rendered `disabled` with the note box
+  `is-wpml-locked-note` and is not saved. See `Admin/Metafield.php` in the
+  base plugin.
+- **Derived values are never copied.** A value calculated from other fields
+  (e.g. plain text from the content) is calculated again in the translation
+  from the translated fields.
+- IDs of posts, terms or media in your own code go through
+  `apply_filters('wpml_object_id', $id, $type, true, $lang)` before they
+  are shown or linked in another language.
+- Test new features in a translated post or page too, not only in the
+  default language.
+
+## 7. Accessibility
 
 - Never remove focus outlines without a visible replacement (`:focus-visible`).
 - Respect user preferences like `prefers-reduced-motion`.
@@ -94,7 +240,7 @@ around it.
   usable with the keyboard, with accessible names.
 - Images need meaningful `alt` text (or `alt=""` if decorative).
 
-## 7. Divi modules
+## 8. Divi modules
 
 - **New modules are native Divi 5 modules** in `divi5/` (created with
   `npx @iservice-dev/is-wp-plugin-kit add-divi5`).
@@ -111,17 +257,22 @@ around it.
   switch later: the render code gets its items from one function
   (`get_items()`), and can be replaced easily. Write the decision in the pull request.
 
-## 8. Code quality
+## 9. Code quality
 
-- Follow the WordPress coding standards; the build runs oxlint and stylelint.
-  Fix warnings, don't disable rules.
+- Follow the WordPress coding standards. The build lints TypeScript
+  (oxlint) and SCSS (stylelint); fix warnings, don't disable rules. PHP is
+  not linted by the build, so check it yourself against the standards and
+  run `php -l` on changed files.
 - PHP 8.3+ syntax and types. No optional parameters before required ones.
 - No dead code, no commented-out code, no unused options, no fallbacks for
   browsers or APIs older than five years.
+- **Fix the cause, don't add a fallback.** If a value is missing because a
+  field, option or hook is wired wrongly, wire it correctly. No "use A,
+  otherwise B" logic that hides the problem.
 - No magic numbers: name them as constants or settings.
 - Clear names instead of comments. Comment only what the code can't say itself.
 
-## 9. Build and run
+## 10. Build and run
 
 ```bash
 npm install        # once
@@ -131,7 +282,7 @@ npm run build      # production build: lint, Vite, .mo, divi5/
 
 `npm run build` must pass without errors before you open a pull request.
 
-## 10. Git workflow
+## 11. Git workflow
 
 - **Never commit to `main` or `dev` directly.** Create a branch from `dev`
   (`feature/<short-name>`, `fix/<short-name>`) and open a pull request into
@@ -142,10 +293,9 @@ npm run build      # production build: lint, Vite, .mo, divi5/
   build output or editor files.
 - Every pull request describes what changed and, ideally, how it was tested.
 
-## 11. When to stop and ask a developer
+## 12. When to stop and ask a developer
 
 - Anything touching data storage, custom post types, the database, REST APIs,
   user roles or settings of other plugins.
 - Adding Composer or npm dependencies.
 - Security-related code you are not sure about.
-- When a rule in this file blocks what you were asked to do.
