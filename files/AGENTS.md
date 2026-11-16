@@ -57,16 +57,17 @@ around it.
 
 ## 3. Check the base plugin first
 
-Before writing a helper, class, style or script, look in `is-base-plugin`
-(next to this plugin in `wp-content/plugins/`) for something that already
-does it, and use that instead of building your own:
+Before writing a helper, class, style or script, check whether the IS Base
+Plugin already does it and use that instead (repo `iService-dev/is-base-plugin`):
 
 - PHP helpers: `includes/lib/Core/Helpers/`
 - PHP services and classes: `includes/lib/Core/Services/`,
   `includes/lib/Admin/Settings/` (settings pages and fields)
-- SCSS variables and components: `assets/src/scss/base/`,
-  `assets/src/scss/components/` (cards, tables, buttons, fields, …)
-- TypeScript components: `assets/src/ts/components/`
+- Admin styles and scripts: use the base plugin's classes (`is-card`,
+  `is-table`, buttons, fields, table filter, …) in your markup – its CSS and
+  JS load on every admin page. See `assets/src/scss/components/` and
+  `assets/src/ts/components/` for what exists; you can't `@use` or `import`
+  them.
 
 Never copy code from the base plugin into this plugin. If something is
 missing in the base plugin and would be useful for other plugins too, stop
@@ -76,14 +77,16 @@ and ask a developer whether it belongs there.
 
 - Write TypeScript in `assets/src/ts/` and SCSS in `assets/src/scss/`.
   No jQuery and no plain JS/CSS in new code. `assets/src/legacy/` only exists in older plugins.
-- **SCSS is real SCSS, not CSS in a `.scss` file.** Use nesting, `@use`,
-  variables and mixins.
+  Exception: `divi5/` has its own build, folder layout and asset loading;
+  follow `divi5/README.md` there.
+- **SCSS is real SCSS, not CSS in a `.scss` file.** Use nesting, `@use`, variables and mixins.
   - Build it modular: an entry file (e.g. `backend.scss`) only `@use`s
     partials from `assets/src/scss/components/`. One component per partial,
     named after the component or mixin inside it (`_settings-form.scss`).
-  - Variables live in `assets/src/scss/base/_variables.scss`. Colours,
-    spacing, radii, font sizes and breakpoints always come from variables
-    (the base plugin's first), never as literal values in components.
+  - Variables live in the plugin's own `assets/src/scss/base/_variables.scss`
+    (same structure as in the other iService plugins). Colours, spacing,
+    radii, font sizes and breakpoints always come from variables, never as
+    literal values in components.
   - Admin and settings pages use the base plugin's styles and components
     (`is-card`, `is-table`, …) instead of their own look.
 - **TypeScript is modular too.** An entry file (e.g. `backend.ts`) only
@@ -93,9 +96,7 @@ and ask a developer whether it belongs there.
   and then typed.
 - Enqueue only through the base plugin's `Asset_Manager_Service`
   (`enqueue_js('name')`, `enqueue_css('name')`), never with hard-coded
-  URLs to `assets/`. Exception: Divi 5 modules in `divi5/` load their files
-  through `divi5/bootstrap.php` and the module's render callback; keep that
-  as it is.
+  URLs to `assets/`. Exception: `divi5/` (see above).
 - Load assets **only where they are needed** (the page, admin screen or
   module that uses them). Never load admin CSS/JS on the frontend.
   For user-specific assets, check a capability (`current_user_can()`), not
@@ -155,25 +156,19 @@ base plugin.
     override that, e.g. `['who_type' => 'all']`.
   - A plugin with its own top-level menu (needs a reason in the pull
     request) registers it and every submenu through the filter
-    `is_security/backend/catalog`: one group with `area`, `source` and
-    `entries` (`slug`, `parent`, `label`, `kind` `group`/`child`,
-    `who_type`, `locked`). Use `IS\Base\Admin\Settings\Core\Settings::register_security_catalog()`
-    as the template.
-- **Settings show up readable in the activity log.** The log reads
-  `label` and `log` from `register_setting()`. Use the base plugin's
-  `Setting_*` field classes and always pass the named argument `log`, e.g.
+    `is_security/backend/catalog`. Copy the structure from
+    `Settings::register_security_catalog()` in the base plugin.
+- **Settings show up readable in the activity log.** Use the base plugin's
+  `Setting_*` fields and always pass the named argument `log`, e.g.
   `log: ['source' => $this->config->pluginName, 'area' => __('API Settings', $this->config->pluginName)]`.
-  `label` defaults to the field label; set it only if that isn't clear
-  enough on its own.
-  If you call `register_setting()` yourself, pass `label` and `log` the
-  same way.
+  Add `'label' => …` inside `log` only if the field label isn't clear on its
+  own. With your own `register_setting()`, pass `label` and `log` the same way.
 - **Secret options are masked** in the log only if their name contains
-  `key`, `secret`, `token`, `pass`, `salt`, `license` or `api`. Name
-  options that hold secrets accordingly.
-- Requests that must reach the site without passing the access rules
-  (admin-ajax, admin-post, cron and REST already do) go through the filter
-  `is_security/access/bypass_paths`. Stop and ask a developer before adding
-  one.
+  `key`, `secret`, `token`, `pass`, `salt`, `license` or `api`. Name them
+  accordingly.
+- Requests that must skip the access rules go through the filter
+  `is_security/access/bypass_paths` (admin-ajax, admin-post, cron and REST
+  already do). Ask a developer before adding one.
 
 ## 6. Translations
 
@@ -188,7 +183,8 @@ base plugin.
   translations stay English from WordPress 6.7 on.
 - Strings in TypeScript are translated in PHP and passed to the script with
   `Asset_Manager_Service::localize()`. Don't hard-code user-facing text in
-  TypeScript.
+  TypeScript. Exception: Divi 5 Builder strings go into the module's
+  `l10n.ts` (see `divi5/README.md`).
 
 ### Working with WPML and the IS WPML plugin
 
@@ -242,12 +238,16 @@ classes of either plugin.
 
 ## 8. Divi modules
 
-- **New modules are native Divi 5 modules** in `divi5/` (created with
-  `npx @iservice-dev/is-wp-plugin-kit add-divi5`).
+- **New modules are native Divi 5 modules** in `divi5/`. If the plugin has
+  no `divi5/` folder yet, create it once with
+  `npx @iservice-dev/is-wp-plugin-kit add-divi5`. Further modules are added
+  inside it as described in `divi5/README.md` ("Adding another module").
+  Never delete an existing `divi5/` folder.
 - Every module is self-contained in its own folder and doesn't depend on
-  other modules.
-- Front-end scripts only load when the module is on the page. Exception for
-  now: the small `divi5/styles/bundle.css` loads on every page.
+  other modules, except a child module on its parent (see
+  `divi5/README.md`).
+- Front-end scripts and styles only load when the module is on the page:
+  the module's render callback enqueues them (see the example module).
 - **Where content is stored is a developer decision.** Divi saves module
   content inside the page. That's fine for layout and visual settings. Stop and
   ask a developer before building if the content:

@@ -37,8 +37,10 @@ trait RenderCallbackTrait {
 	 * @return string The module's rendered HTML.
 	 */
 	public static function render_callback($attrs, $content, $block, $elements) {
-		// Front-End script for this module (compiled to scripts/module.js).
+		// Front-End assets, enqueued here so they only load on pages that use this module.
+		// Script compiled to scripts/module.js; style registered in divi5/bootstrap.php.
 		wp_enqueue_script('D5_HANDLE_PLACEHOLDER-frontend', D5_CONST_PLACEHOLDER_URL.'scripts/module.js', [], D5_CONST_PLACEHOLDER_VERSION, true);
+		wp_enqueue_style('D5_HANDLE_PLACEHOLDER-bundle-style');
 
 		// Title.
 		$title = $elements->render(

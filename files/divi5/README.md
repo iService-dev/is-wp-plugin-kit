@@ -3,7 +3,7 @@
 Self-contained Divi 5 module(s) for this iService plugin. This directory
 has its **own** build pipeline (webpack) and does **not** touch the plugin's
 Vite kit pipeline in `/assets`. It is loaded automatically by the IS Base
-plugin (`Core\Divi`) whenever a `divi5/bootstrap.php` is present — no manual
+plugin (`Core\Services\Divi_Service`) whenever a `divi5/bootstrap.php` is present — no manual
 wiring in the plugin's main file is required.
 
 It is based on Elegant Themes' official
@@ -15,7 +15,7 @@ Content** module to use as a starting point.
 
 ```
 divi5/
-├─ bootstrap.php                 # required by ../D5_TEXTDOMAIN_PLACEHOLDER.php; registers + enqueues
+├─ bootstrap.php                 # loaded by the IS Base plugin; registers modules + assets
 ├─ webpack.config.js             # build config (independent of Vite)
 ├─ package.json                  # build deps + scripts
 ├─ tsconfig.json
@@ -60,14 +60,18 @@ The build emits (all git-ignored):
 | ------------------------------ | ------------------------------------- |
 | `scripts/bundle.js`            | Visual Builder                        |
 | `scripts/module.js`            | Front-End (enqueued by the render callback) |
-| `styles/bundle.css`            | Front-End **and** Visual Builder (`module.scss`) |
+| `styles/bundle.css`            | Front-End (enqueued by the render callback) **and** Visual Builder (`module.scss`) |
 | `styles/vb-bundle.css`         | Visual Builder only (`style.scss`)    |
 | `modules-json/example-module/` | PHP `ModuleRegistration::register_module` (copied `module.json` + default attrs) |
 
-`bootstrap.php` enqueues the VB script/style via Divi's `PackageBuildManager`
-and the front-end `styles/bundle.css` via `wp_enqueue_style`; the front-end
-`scripts/module.js` is enqueued from the module's `render_callback`. These are
-only loaded when Divi 5 is active.
+`bootstrap.php` enqueues the VB script/styles via Divi's `PackageBuildManager`
+and only *registers* the front-end `styles/bundle.css`. The module's
+`render_callback` enqueues `scripts/module.js` and `styles/bundle.css`, so the
+front-end assets load only on pages (or Theme Builder templates) that contain
+the module. WordPress 6.9+ moves styles enqueued during rendering into `<head>`
+on classic themes like Divi, so there is no flash of unstyled content. When
+you add a module, enqueue the style in its render callback too. These are only
+loaded when Divi 5 is active.
 
 ## Translations
 
@@ -136,5 +140,14 @@ For a *shared* brand icon used across multiple plugins, add it to is-base-plugin
 2. Register it in `src/index.ts`. (It reuses the shared `is/logo` icon by default;
    for a custom one, see *Module icon* above.)
 3. Duplicate `modules/ExampleModule/` → `modules/<New>/`, update the namespace
-   and class names, and add it in `modules/Modules.php`.
-4. `npm run build`.
+   and class names, and add it in `modules/Modules.php`. Its render callback
+   enqueues `styles/bundle.css` too (see *Build* above).
+4. Only if the module needs its own Front-End script: add an entry in
+   `webpack.config.js` (e.g. `'<new>-module': './src/components/<new>/module.ts'`
+   → `scripts/<new>-module.js`) and enqueue that file in its render callback.
+   The existing `module` entry only builds the example module's script.
+5. `npm run build`.
+
+For a parent module with child items, create both modules as above, then set
+`"childModuleName": "<namespace>/<child-module>"` in the parent's `module.json`
+and `"category": "child-module"` in the child's.
