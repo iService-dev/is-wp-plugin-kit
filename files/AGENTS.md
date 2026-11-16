@@ -49,16 +49,20 @@ around it.
   Everything else reads and writes them only through getters and setters,
   never with the raw string.
 - **Post fields go through the base plugin's `Field_Service`.** A plugin
-  registers or filters its own fields there and never builds its own field
-  registry.
-- **Don't change versions.** Never raise the `Version` header; the build
-  does that. Set `$required_base_version` in the main plugin file only to a
-  base plugin version that actually exists.
+  adds its own fields through the filter `is/base/field_providers` (a class
+  implementing `Field_Provider`, see `General_Data_Provider` in the base
+  plugin) or adjusts them with `is/base/field_entries`. Never build an own
+  field registry.
+- **Don't change versions.** Never raise the `Version` header; the release
+  workflow does that on every push to `main`. Set `$required_base_version`
+  in the main plugin file only to a base plugin version that actually exists.
 
 ## 3. Check the base plugin first
 
 Before writing a helper, class, style or script, check whether the IS Base
-Plugin already does it and use that instead (repo `iService-dev/is-base-plugin`):
+Plugin already does it and use that instead (repo `iService-dev/is-base-plugin`,
+usually checked out next to this plugin; if you can't find it, ask a
+developer instead of building your own):
 
 - PHP helpers: `includes/lib/Core/Helpers/`
 - PHP services and classes: `includes/lib/Core/Services/`,
@@ -84,7 +88,7 @@ and ask a developer whether it belongs there.
     partials from `assets/src/scss/components/`. One component per partial,
     named after the component or mixin inside it (`_settings-form.scss`).
   - Variables live in the plugin's own `assets/src/scss/base/_variables.scss`
-    (same structure as in the other iService plugins). Colours, spacing,
+    (create it with the first variable you need). Colours, spacing,
     radii, font sizes and breakpoints always come from variables, never as
     literal values in components.
   - Admin and settings pages use the base plugin's styles and components
@@ -159,7 +163,8 @@ base plugin.
     `is_security/backend/catalog`. Copy the structure from
     `Settings::register_security_catalog()` in the base plugin.
 - **Settings show up readable in the activity log.** Use the base plugin's
-  `Setting_*` fields and always pass the named argument `log`, e.g.
+  `Setting_*` fields and always pass the named argument `log` (all except
+  `Setting_Info`, which saves nothing), e.g.
   `log: ['source' => $this->config->pluginName, 'area' => __('API Settings', $this->config->pluginName)]`.
   Add `'label' => …` inside `log` only if the field label isn't clear on its
   own. With your own `register_setting()`, pass `label` and `log` the same way.
@@ -173,8 +178,8 @@ base plugin.
 ## 6. Translations
 
 - All user-facing strings in English in the code, wrapped in `__()`,
-  `esc_html__()` etc. with the plugin's text domain (see the plugin header
-  or `PLUGIN.md`; normally the plugin slug).
+  `esc_html__()` etc. with the plugin's text domain. The text domain must be
+  the plugin slug (= folder name); otherwise translations don't load.
 - Translations go into `assets/src/l10n/<locale>.po` (e.g. `de_DE.po`);
   `.mo` files are built automatically.
 - `.po` files use CRLF line endings. Keep them when editing, otherwise the
@@ -203,12 +208,13 @@ classes of either plugin.
 - **Post meta** (`wp_postmeta`) is set in WPML's custom field translation.
   With "don't translate", Meta Box hides the field in translations
   completely.
-- **Fields in custom tables** are registered in the base plugin's
-  `Field_Service` (see section 2) and set their default mode in the field
-  config with `'translation' => 'copy'` etc. The customer can change it on
-  the IS WPML settings page. A column that holds post or term IDs without
-  being a Meta Box `post`/`taxonomy` field declares it with
-  `'translation_ref' => 'post:<post_type>'` or `'term:<taxonomy>'`.
+- **Fields in custom tables** come from a `Field_Provider` (see section 2).
+  Each entry sets its default mode in `attrs['translation']` (`'copy'`
+  etc.), and a column that holds post or term IDs sets `ref` to
+  `'post:<post_type>'` or `'term:<taxonomy>'` (see `General_Data_Provider`).
+  For Meta Box fields the same goes into the field config as `'translation'`
+  and `'translation_ref'`. The customer can change the mode on the IS WPML
+  settings page.
 - **No own copy or sync logic for translations** (on `save_post`, on a new
   translation, on a finished job). The IS WPML plugin does that. Follow-up
   work such as clearing caches hooks into `is/wpml/after_copy` or
@@ -260,7 +266,9 @@ classes of either plugin.
 ## 9. Code quality
 
 - Follow the WordPress coding standards. The build lints TypeScript
-  (oxlint) and SCSS (stylelint); fix warnings, don't disable rules. PHP is
+  (oxlint) and SCSS (stylelint) in `assets/src/` and fixes some SCSS issues
+  itself (review those changes); `divi5/` is not linted. Fix warnings, don't
+  disable rules. PHP is
   not linted by the build, so check it yourself against the standards and
   run `php -l` on changed files.
 - PHP 8.3+ syntax and types. No optional parameters before required ones.
@@ -292,7 +300,7 @@ npm run build      # production build: lint, Vite, .mo, divi5/
   (`feature/<short-name>`, `fix/<short-name>`) and open a pull request into
   `dev`.
 - Only developers merge `dev` into `main`. Every push to `main` creates a
-  release.
+  release, unless the commit message contains `[skip release]`.
 - Never commit `node_modules/`, `vendor/`, `assets/dist/`, `languages/*.mo`,
   build output or editor files.
 - Every pull request describes what changed and, ideally, how it was tested.

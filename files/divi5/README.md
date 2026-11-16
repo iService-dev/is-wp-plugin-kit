@@ -3,8 +3,9 @@
 Self-contained Divi 5 module(s) for this iService plugin. This directory
 has its **own** build pipeline (webpack) and does **not** touch the plugin's
 Vite kit pipeline in `/assets`. It is loaded automatically by the IS Base
-plugin (`Core\Services\Divi_Service`) whenever a `divi5/bootstrap.php` is present — no manual
-wiring in the plugin's main file is required.
+plugin (`Core\Services\Divi_Service`) whenever a `divi5/bootstrap.php` is present. The only
+wiring needed is the `new Divi_Service(...)` line in `includes/lib/Core/Plugin.php`,
+which the kit template already has (older plugins may still use `new Divi(...)`).
 
 It is based on Elegant Themes' official
 [`d5-extension-example-modules`](https://github.com/elegantthemes/d5-extension-example-modules)
@@ -19,16 +20,18 @@ divi5/
 ├─ webpack.config.js             # build config (independent of Vite)
 ├─ package.json                  # build deps + scripts
 ├─ tsconfig.json
-├─ composer.json                 # optional PSR-4 autoload (a fallback autoloader exists)
+├─ composer.json                 # local dev only; releases use the fallback autoloader in bootstrap.php
 ├─ src/                          # Visual Builder (TypeScript/React) source
-│  ├─ index.ts                   # registers the module in the VB + loads translations
+│  ├─ index.ts                   # registers the module(s) in the VB
 │  └─ components/example-module/  # the module: edit, styles, settings (module.json),
-│                                 #   translations (l10n.ts), Front-End script (module.ts)
+│                                 #   translations (l10n.ts, loaded in its index.ts),
+│                                 #   Front-End script (module.ts)
 └─ modules/                      # Front-End rendering (PHP)
    ├─ Modules.php                # adds module(s) to the D5 dependency tree
    └─ ExampleModule/
       ├─ ExampleModule.php       # registers the module + render callback
-      └─ ExampleModuleTrait/     # render / classnames / styles / script-data / custom-css
+      └─ ExampleModuleTrait/     # render / classnames / styles / script-data
+                                 #   (+ CustomCssTrait, not used by default)
 ```
 
 Each VB concept in `src/components/example-module/` has a 1:1 PHP equivalent in
@@ -81,12 +84,15 @@ own catalog instead:
 
 - `src/components/example-module/l10n.ts` — the catalog in `setLocaleData`
   format; keys are the English source strings.
-- `index.ts` loads it into `wp.i18n` (gated by the page language) and runs the
+- The component's `index.ts` (`src/components/example-module/index.ts`) loads
+  it into `wp.i18n` (only when the page language starts with `de`) and runs the
   Builder metadata (title, field labels/descriptions, group/option labels) and
   the default admin label through `__()`.
 
 Front-end PHP strings stay in the plugin's normal `.po`/`.mo`; this catalog is
-only for the Builder/JS strings. Edit `l10n.ts` (or add locales) and rebuild.
+only for the Builder/JS strings. Edit `l10n.ts` and rebuild. To add another
+language, export a second catalog from `l10n.ts` and extend the language check
+in the component's `index.ts`.
 
 ## Module icon
 

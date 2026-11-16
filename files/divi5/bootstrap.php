@@ -2,8 +2,9 @@
 /**
  * Divi 5 module bootstrap.
  *
- * Self-contained loader for the plugin's Divi 5 module(s). This file is loaded
- * by the IS Base plugin (Divi_Service) only when Divi 5 is active. It:
+ * Self-contained loader for the plugin's Divi 5 module(s). The IS Base plugin
+ * (Divi_Service) loads this file whenever it exists; everything below hooks into
+ * Divi 5, so without Divi 5 nothing happens. It:
  *   1. defines the path/url constants used by the modules,
  *   2. autoloads the module PHP classes (composer optional),
  *   3. registers the module(s) with the Divi 5 dependency tree, and

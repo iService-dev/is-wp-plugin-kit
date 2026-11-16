@@ -213,7 +213,9 @@ export async function runInit() {
 	// ------------------------------------------
 	const dirs = [
 		'assets/src/ts',
+		'assets/src/ts/components',
 		'assets/src/scss',
+		'assets/src/scss/components',
 		'assets/src/fonts',
 		'assets/src/images',
 		'assets/src/l10n',

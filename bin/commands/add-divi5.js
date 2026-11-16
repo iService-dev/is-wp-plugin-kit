@@ -91,7 +91,7 @@ export async function runAddDivi5() {
 	}
 
 	if (fs.existsSync(destDir)) {
-		console.error('❌ A divi5/ folder already exists here. Remove it first or add modules manually.');
+		console.error('❌ A divi5/ folder already exists here. Add further modules inside it (see divi5/README.md, "Adding another module"); don\'t delete it.');
 		process.exit(1);
 	}
 
