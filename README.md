@@ -13,8 +13,9 @@ npx @iservice-dev/is-wp-plugin-kit init
 This sets up your complete plugin structure with:
 - Configuration files (`.gitignore`, TypeScript, linting, PostCSS)
 - Folder structure (`assets/`, `includes/`; `languages/` is created by the build)
-- Template files (`<plugin-slug>.php`, `Config.php`, `Plugin.php`, `de_DE.po`,
-  `.github/workflows/deploy.yml`)
+- Template files (`<plugin-slug>.php`, `Config.php`, `Plugin.php`, `de_DE.po`)
+- GitHub Actions: `.github/workflows/checks.yml` and `deploy.yml` (see
+  [CI checks](#ci-checks))
 - `vite.config.ts` with default settings
 - Agent guidelines: `AGENTS.md` (shared iService rules, owned by the kit — edit
   `files/AGENTS.md` here, not in the plugin), `PLUGIN.md` (plugin-specific
@@ -123,6 +124,20 @@ your-plugin/
 ├── languages/           # Compiled .mo files
 └── vite.config.ts
 ```
+
+## CI checks
+
+`init` adds two workflows that use the shared checks from
+[`iService-dev/.github`](https://github.com/iService-dev/.github)
+(plugin header, `php -l` on the minimum and newest PHP, build and zip):
+
+- `checks.yml` runs them on every pull request into `dev` or `main` and on
+  every push to `dev`.
+- `deploy.yml` runs them on a push to `main` and only releases when they
+  pass.
+
+Existing plugins: copy `files/checks.yml` and the `checks` job from
+`files/deploy.yml` by hand.
 
 ## Requirements
 

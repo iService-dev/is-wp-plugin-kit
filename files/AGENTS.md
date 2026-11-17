@@ -268,9 +268,10 @@ classes of either plugin.
 - Follow the WordPress coding standards. The build lints TypeScript
   (oxlint) and SCSS (stylelint) in `assets/src/` and fixes some SCSS issues
   itself (review those changes); `divi5/` is not linted. Fix warnings, don't
-  disable rules. PHP is
-  not linted by the build, so check it yourself against the standards and
-  run `php -l` on changed files.
+  disable rules.
+- **All checks in the pull request must be green before review.** If a
+  check fails, fix the cause; never disable, skip or weaken a check. Still
+  run `php -l` on changed PHP files before pushing.
 - PHP 8.3+ syntax and types. No optional parameters before required ones.
 - No dead code, no commented-out code, no unused options, no fallbacks for
   browsers or APIs older than five years.

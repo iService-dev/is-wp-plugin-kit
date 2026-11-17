@@ -266,6 +266,12 @@ export async function runInit() {
 	fs.writeFileSync(path.join(workflowDir, 'deploy.yml'), deployYmlContent);
 	console.log('✓ Created .github/workflows/deploy.yml');
 
+	fs.copyFileSync(
+		path.join(__dirname, '../../files/checks.yml'),
+		path.join(workflowDir, 'checks.yml')
+	);
+	console.log('✓ Created .github/workflows/checks.yml');
+
 	// ------------------------------------------
 	// 11) create and customize PHP template files
 	// ------------------------------------------

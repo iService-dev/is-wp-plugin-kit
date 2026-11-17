@@ -6,7 +6,11 @@ on:
       - main
 
 jobs:
+  checks:
+    uses: iService-dev/.github/.github/workflows/plugin-checks.yml@main
+
   build:
+    needs: checks
     runs-on: ubuntu-latest
 
     steps:
