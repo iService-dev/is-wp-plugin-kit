@@ -29,7 +29,7 @@ export const ModuleStyles = ({
 	state,
 	noStyleTag,
 }: StylesProps<ExampleModuleAttrs>): ReactElement => {
-	const textSelector = `${orderClass} .is_example_module__inner`;
+	const textSelector = `${orderClass} .D5_CLASS_PREFIX_PLACEHOLDER_example_module__inner`;
 
 	return (
 		<StyleContainer mode={mode} state={state} noStyleTag={noStyleTag}>

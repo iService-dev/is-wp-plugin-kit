@@ -7,12 +7,12 @@
 
 class ExampleModule {
 	constructor(root: HTMLElement) {
-		root.classList.add('is_example_module--ready');
+		root.classList.add('D5_CLASS_PREFIX_PLACEHOLDER_example_module--ready');
 	}
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-	document.querySelectorAll<HTMLElement>('.is_example_module').forEach((el) => {
+	document.querySelectorAll<HTMLElement>('.D5_CLASS_PREFIX_PLACEHOLDER_example_module').forEach((el) => {
 		new ExampleModule(el);
 	});
 });

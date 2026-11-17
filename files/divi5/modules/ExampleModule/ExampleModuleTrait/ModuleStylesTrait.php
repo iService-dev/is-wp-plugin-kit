@@ -64,7 +64,7 @@ trait ModuleStylesTrait {
 									[
 										'componentName' => 'divi/text',
 										'props'         => [
-											'selector' => "{$args['orderClass']} .is_example_module__inner",
+											'selector' => "{$args['orderClass']} .D5_CLASS_PREFIX_PLACEHOLDER_example_module__inner",
 											'attr'     => $attrs['module']['advanced']['text'] ?? [],
 										],
 									],

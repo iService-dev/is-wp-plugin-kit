@@ -40,11 +40,11 @@ export const ExampleModuleEdit = (props: ExampleModuleEditProps): ReactElement =
 			{elements.styleComponents({
 				attrName: 'module',
 			})}
-			<div className="is_example_module__inner">
+			<div className="D5_CLASS_PREFIX_PLACEHOLDER_example_module__inner">
 				{elements.render({
 				attrName: 'title',
 				})}
-				<div className="is_example_module__content">
+				<div className="D5_CLASS_PREFIX_PLACEHOLDER_example_module__content">
 				{elements.render({
 					attrName: 'content',
 				})}

@@ -146,6 +146,19 @@ export async function runAddDivi5() {
 			.map((w, i) => (i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()))
 			.join('') || 'divi5Module';
 
+	// Block namespace and CSS class prefix, unique per plugin so modules of
+	// different plugins never collide: is-ui-snippets-plugin →
+	// is-ui-snippets/<module> and is_ui_snippets_<module>.
+	const blockNs =
+		slug
+			.toLowerCase()
+			.replace(/-plugin$/, '')
+			.replace(/[^a-z0-9-]+/g, '-')
+			.replace(/^-+|-+$/g, '')
+			// A CSS class can't start with a digit (3d-viewer → is-3d-viewer).
+			.replace(/^(?=\d)/, 'is-') || 'divi5-module';
+	const classPrefix = blockNs.replace(/-/g, '_');
+
 	// D5_NS_ESCAPED_PLACEHOLDER must be replaced before D5_NS_PLACEHOLDER,
 	// since the former contains the latter as a prefix.
 	const replace = (content) =>
@@ -156,17 +169,18 @@ export async function runAddDivi5() {
 			.split('D5_HANDLE_PLACEHOLDER').join(assetHandle)
 			.split('D5_PKG_PLACEHOLDER').join(pkgName)
 			.split('D5_TEXTDOMAIN_PLACEHOLDER').join(textDomain)
-			.split('D5_HOOKS_NS_PLACEHOLDER').join(hooksNs);
+			.split('D5_HOOKS_NS_PLACEHOLDER').join(hooksNs)
+			.split('D5_BLOCK_NS_PLACEHOLDER').join(blockNs)
+			.split('D5_CLASS_PREFIX_PLACEHOLDER').join(classPrefix);
 
 	copyTemplate(TEMPLATE_DIR, destDir, replace);
 
-	console.log(`\n✓ Created divi5/ (namespace ${nsRaw}\\Divi5, handle ${assetHandle})`);
+	console.log(`\n✓ Created divi5/ (namespace ${nsRaw}\\Divi5, handle ${assetHandle}, blocks ${blockNs}/…, classes ${classPrefix}_…)`);
 	console.log('\n🎉 Divi 5 module bundle added!\n');
 	console.log('Next steps:');
 	console.log('  npm run build      # builds the plugin + divi5/ (installs its deps first time)');
 	console.log('  npm run dev        # watches everything, divi5/ included\n');
 	console.log('Both root commands drive divi5/ automatically — no separate cd/install needed.');
 	console.log('The base plugin auto-loads divi5/bootstrap.php — no wiring needed.');
-	console.log('Duplicate src/components/example-module + modules/ExampleModule to add more.\n');
 	process.exit(0);
 }

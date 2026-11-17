@@ -1,11 +1,11 @@
 {
-	"name": "is/example-module",
+	"name": "D5_BLOCK_NS_PLACEHOLDER/example-module",
 	"d4Shortcode": "",
 	"title": "IS Example Module",
 	"titles": "IS Example Modules",
 	"moduleIcon": "is/logo",
-	"moduleClassName": "is_example_module",
-	"moduleOrderClassName": "is_example_module",
+	"moduleClassName": "D5_CLASS_PREFIX_PLACEHOLDER_example_module",
+	"moduleOrderClassName": "D5_CLASS_PREFIX_PLACEHOLDER_example_module",
 	"category": "module",
 	"attributes": {
 		"module": {
@@ -47,7 +47,7 @@
 		},
 		"title": {
 			"type": "object",
-			"selector": "{{selector}} .is_example_module__title",
+			"selector": "{{selector}} .D5_CLASS_PREFIX_PLACEHOLDER_example_module__title",
 			"styleProps": {
 				"font": {
 					"important": {
@@ -95,7 +95,7 @@
 			},
 			"tagName": "h2",
 			"attributes": {
-				"class": "is_example_module__title"
+				"class": "D5_CLASS_PREFIX_PLACEHOLDER_example_module__title"
 			},
 			"inlineEditor": "plainText",
 			"elementType": "heading",
@@ -103,10 +103,10 @@
 		},
 		"content": {
 			"type": "object",
-			"selector": "{{selector}} .is_example_module__content",
+			"selector": "{{selector}} .D5_CLASS_PREFIX_PLACEHOLDER_example_module__content",
 			"tagName": "div",
 			"attributes": {
-				"class": "is_example_module__content"
+				"class": "D5_CLASS_PREFIX_PLACEHOLDER_example_module__content"
 			},
 			"inlineEditor": "richText",
 			"childrenSanitizer": "et_core_esc_previously",
@@ -114,7 +114,7 @@
 				"bodyFont": {
 					"selectors": {
 						"desktop": {
-							"value": "{{selector}} .is_example_module__content"
+							"value": "{{selector}} .D5_CLASS_PREFIX_PLACEHOLDER_example_module__content"
 						}
 					}
 				}
@@ -149,11 +149,11 @@
 		"title": {
 			"subName": "title",
 			"selector": "div{{selector}}",
-			"selectorSuffix": " .is_example_module__title"
+			"selectorSuffix": " .D5_CLASS_PREFIX_PLACEHOLDER_example_module__title"
 		},
 		"content": {
 			"subName": "content",
-			"selectorSuffix": " .is_example_module__content"
+			"selectorSuffix": " .D5_CLASS_PREFIX_PLACEHOLDER_example_module__content"
 		}
 	},
 	"settings": {

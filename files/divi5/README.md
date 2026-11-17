@@ -157,10 +157,22 @@ it from this plugin's bundle:
 For a *shared* brand icon used across multiple plugins, add it to is-base-plugin
 (`includes/lib/Divi5/is-icons.js`) instead, so every plugin can reference it.
 
+## Names
+
+Block names and CSS classes carry a prefix that is unique to this plugin, so
+modules of different plugins never collide. `add-divi5` derives it from the
+plugin slug: for `is-ui-snippets-plugin` the example module is the block
+`is-ui-snippets/example-module` with the CSS class
+`is_ui_snippets_example_module`. Every module needs its own name, built the
+same way (`<prefix>/<module>`, `<prefix>_<module>`); a copied module keeps the
+original's name until you change it. Never rename a block once pages use it:
+Divi loses every saved instance.
+
 ## Adding another module
 
 1. Duplicate `src/components/example-module/` → `src/components/<new>/`, update
-   the names/classnames in `module.json`, `*.tsx`, `*.ts`, `*.scss`.
+   the names/classnames in `module.json`, `*.tsx`, `*.ts`, `*.scss` (see
+   *Names* above).
 2. Register it in `src/index.ts`. (It reuses the shared `is/logo` icon by default;
    for a custom one, see *Module icon* above.)
 3. Duplicate `modules/ExampleModule/` → `modules/<New>/`, update the namespace
@@ -171,5 +183,5 @@ For a *shared* brand icon used across multiple plugins, add it to is-base-plugin
 5. `npm run build` (restart `npm run dev` if it is running).
 
 For a parent module with child items, create both modules as above, then set
-`"childModuleName": "<namespace>/<child-module>"` in the parent's `module.json`
+`"childModuleName": "<prefix>/<child-module>"` in the parent's `module.json`
 and `"category": "child-module"` in the child's.

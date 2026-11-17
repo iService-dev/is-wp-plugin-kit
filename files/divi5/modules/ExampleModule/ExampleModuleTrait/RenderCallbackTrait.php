@@ -52,7 +52,7 @@ trait RenderCallbackTrait {
 			[
 				'tag'               => 'div',
 				'attributes'        => [
-					'class' => 'is_example_module__content',
+					'class' => 'D5_CLASS_PREFIX_PLACEHOLDER_example_module__content',
 				],
 				'childrenSanitizer' => 'et_core_esc_previously',
 				'children'          => $elements->render(
@@ -99,7 +99,7 @@ trait RenderCallbackTrait {
 						[
 							'tag'               => 'div',
 							'attributes'        => [
-								'class' => 'is_example_module__inner',
+								'class' => 'D5_CLASS_PREFIX_PLACEHOLDER_example_module__inner',
 							],
 							'childrenSanitizer' => 'et_core_esc_previously',
 							'children'          => $title.$content_html,

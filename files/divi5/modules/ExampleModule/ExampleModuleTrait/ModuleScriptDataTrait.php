@@ -65,14 +65,14 @@ trait ModuleScriptDataTrait {
 				'hoverSelector' => $selector,
 				'setContent'    => [
 					[
-						'selector'      => $selector.' .is_example_module__title',
+						'selector'      => $selector.' .D5_CLASS_PREFIX_PLACEHOLDER_example_module__title',
 						'data'          => $attrs['title']['innerContent'] ?? [],
 						'valueResolver' => function ($value) {
 							return $value ?? '';
 						},
 					],
 					[
-						'selector'      => $selector.' .is_example_module__content',
+						'selector'      => $selector.' .D5_CLASS_PREFIX_PLACEHOLDER_example_module__content',
 						'data'          => $attrs['content']['innerContent'] ?? [],
 						'valueResolver' => function ($value) {
 							return $value ?? '';

@@ -50,7 +50,9 @@ npx @iservice-dev/is-wp-plugin-kit add-divi5
 
 Scaffolds a self-contained `divi5/` workspace (own webpack build) with a working
 example module. Namespace and slug are auto-detected; the text domain defaults
-to the slug (`--text-domain` to override). From then on `npm run build`
+to the slug (`--text-domain` to override). Block names and CSS classes get a
+prefix from the slug (`is-ui-snippets-plugin` → `is-ui-snippets/…`,
+`is_ui_snippets_…`), so modules of different plugins never collide. From then on `npm run build`
 and `npm run dev` in the plugin root build/watch `divi5/` too (installing its deps
 on first run) — no separate `cd divi5` step needed. The IS Base plugin auto-loads
 it — no wiring needed.
