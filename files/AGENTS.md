@@ -53,8 +53,10 @@ around it.
   implementing `Field_Provider`, see `General_Data_Provider` in the base
   plugin) or adjusts them with `is/base/field_entries`. Never build an own
   field registry.
-- **Don't change versions.** Never raise the `Version` header; the release
-  workflow does that on every push to `main`. Set `$required_base_version`
+- **Don't change versions.** Never change the `Version` header; a developer
+  raises it on `dev` before a release. In the pull request description,
+  suggest the bump: **patch** (fix), **minor** (new feature, backwards
+  compatible) or **major** (breaking change). Set `$required_base_version`
   in the main plugin file only to a base plugin version that actually exists.
 
 ## 3. Check the base plugin first
@@ -336,8 +338,8 @@ npm run build      # production build: lint, Vite, .mo, divi5/
 - **Never commit to `main` or `dev` directly.** Create a branch from `dev`
   (`feature/<short-name>`, `fix/<short-name>`) and open a pull request into
   `dev`.
-- Only developers merge `dev` into `main`. Every push to `main` creates a
-  release, unless the commit message contains `[skip release]`.
+- Only developers merge `dev` into `main`, through a pull request from `dev`.
+  Every merge into `main` creates a release.
 - Never commit `node_modules/`, `vendor/`, `assets/dist/`, `languages/*.mo`,
   build output or editor files.
 - Every pull request describes what changed and, ideally, how it was tested.
