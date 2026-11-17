@@ -340,9 +340,9 @@ npm run build      # production build: lint, Vite, .mo, divi5/
 
 ## 11. Git workflow
 
-- **Never commit to `main` or `dev` directly.** Create a branch from `dev`
-  (`feature/<short-name>`, `fix/<short-name>`) and open a pull request into
-  `dev`.
+- **Never commit to `main` or `dev` directly.** Start each new feature or
+  fix on its own branch from an up-to-date `dev` (`feature/<short-name>`,
+  `fix/<short-name>`) and open a pull request into `dev`.
 - Only developers merge `dev` into `main`, through a pull request from `dev`.
   Every merge into `main` creates a release.
 - Never commit `node_modules/`, `vendor/`, `assets/dist/`, `languages/*.mo`,
