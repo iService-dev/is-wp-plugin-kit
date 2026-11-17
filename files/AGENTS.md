@@ -106,6 +106,23 @@ and ask a developer whether it belongs there.
   For user-specific assets, check a capability (`current_user_can()`), not
   `is_user_logged_in()`.
 - No external CDNs, fonts or scripts. Everything ships with the plugin.
+- **Icons come from icon fonts only.** No Dashicons, Font Awesome, emoji or
+  SVG/PNG icons in any other form. The only exception is where WordPress
+  itself requires a Dashicon, e.g. the `add_menu_page()` icon.
+  - **Base first:** for general functions (open/close, up/down, edit,
+    delete, add, settings, …) always use the `iservice` font in the base
+    plugin, so every plugin looks the same. The icons and their codes are
+    in `is-base-plugin/assets/src/fonts/selection.json`. Use them in SCSS
+    with `font-family: iservice` and `content: '\e9ae'`, and the base
+    classes `is-icon` / `is-icon-btn` for the tile or button around them.
+  - If a general icon is missing there, don't build a substitute. Stop and
+    ask a developer to add it to the `iservice` font, and name the icon and
+    where it is needed in the pull request.
+  - **Plugin-specific icons** that only make sense for this plugin go into
+    the plugin's own icon font in `assets/src/fonts/` (IcoMoon, keep its
+    `.json` so it can be extended), named after the plugin. Example:
+    `legumehub` in `is-legumehub-plugin`. Never copy general icons from
+    `iservice` into it.
 - No placeholder or test media in the repo.
   Images in `assets/src/images/` must be optimised; prefer SVG for icons
   and graphics and WebP for photos, and keep them under 200 KB unless
