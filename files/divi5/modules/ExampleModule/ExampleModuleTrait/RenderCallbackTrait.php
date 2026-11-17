@@ -17,6 +17,7 @@ use ET\Builder\Packages\Module\Module;
 use ET\Builder\Framework\Utility\HTMLUtility;
 use ET\Builder\FrontEnd\BlockParser\BlockParserStore;
 use ET\Builder\Packages\Module\Options\Element\ElementComponents;
+use D5_NS_PLACEHOLDER\Divi5\Modules\Assets;
 use D5_NS_PLACEHOLDER\Divi5\Modules\ExampleModule\ExampleModule;
 
 trait RenderCallbackTrait {
@@ -37,10 +38,7 @@ trait RenderCallbackTrait {
 	 * @return string The module's rendered HTML.
 	 */
 	public static function render_callback($attrs, $content, $block, $elements) {
-		// Front-End assets, enqueued here so they only load on pages that use this module.
-		// Script compiled to scripts/module.js; style registered in divi5/bootstrap.php.
-		wp_enqueue_script('D5_HANDLE_PLACEHOLDER-frontend', D5_CONST_PLACEHOLDER_URL.'scripts/module.js', [], D5_CONST_PLACEHOLDER_VERSION, true);
-		wp_enqueue_style('D5_HANDLE_PLACEHOLDER-bundle-style');
+		Assets::enqueue('example-module');
 
 		// Title.
 		$title = $elements->render(

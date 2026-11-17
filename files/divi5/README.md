@@ -23,11 +23,10 @@ divi5/
 ├─ composer.json                 # local dev only; releases use the fallback autoloader in bootstrap.php
 ├─ src/                          # Visual Builder (TypeScript/React) source
 │  ├─ index.ts                   # registers the module(s) in the VB
-│  └─ components/example-module/  # the module: edit, styles, settings (module.json),
-│                                 #   translations (l10n.ts, loaded in its index.ts),
-│                                 #   Front-End script (module.ts)
+│  └─ components/example-module/  # one folder per module, see "Module folder" below
 └─ modules/                      # Front-End rendering (PHP)
    ├─ Modules.php                # adds module(s) to the D5 dependency tree
+   ├─ Assets.php                 # loads one module's Front-End files (Assets::enqueue)
    └─ ExampleModule/
       ├─ ExampleModule.php       # registers the module + render callback
       └─ ExampleModuleTrait/     # render / classnames / styles / script-data
@@ -37,6 +36,25 @@ divi5/
 Each VB concept in `src/components/example-module/` has a 1:1 PHP equivalent in
 `modules/ExampleModule/ExampleModuleTrait/` so the builder preview and the
 front-end output stay in sync.
+
+## Module folder
+
+```
+src/components/<module>/
+├─ module.ts          # Front-End JS entry → scripts/<module>.js (omit if no JS is needed)
+├─ module.scss        # Front-End CSS entry → styles/<module>.css
+├─ frontend/          # helpers that only module.ts imports (optional)
+├─ styles/            # SCSS partials that only module.scss @uses (optional)
+├─ index.ts, edit.tsx, module.json, l10n.ts, …   # Visual Builder (shared bundle)
+```
+
+- The build finds `module.ts` and `module.scss` in every folder by itself; only
+  these two names are entries. Everything else reaches them through `import` /
+  `@use`, so a complex module still ends up as one JS and one CSS file.
+- No second entry per module: if a module seems to need two scripts,
+  `module.ts` imports both, or it is really two modules.
+- A module never imports from another module's folder. A small helper that
+  several modules need may be duplicated; if shared code grows, ask a developer.
 
 ## Build
 
@@ -61,20 +79,20 @@ The build emits (all git-ignored):
 
 | Output                         | Loaded where                          |
 | ------------------------------ | ------------------------------------- |
-| `scripts/bundle.js`            | Visual Builder                        |
-| `scripts/module.js`            | Front-End (enqueued by the render callback) |
-| `styles/bundle.css`            | Front-End (enqueued by the render callback) **and** Visual Builder (`module.scss`) |
+| `scripts/bundle.js`            | Visual Builder (all modules)          |
+| `styles/bundle.css`            | Visual Builder (all modules' `module.scss`) |
 | `styles/vb-bundle.css`         | Visual Builder only (`style.scss`)    |
-| `modules-json/example-module/` | PHP `ModuleRegistration::register_module` (copied `module.json` + default attrs) |
+| `scripts/<module>.js`          | Front-End, only where that module is used (only if it has `module.ts`) |
+| `styles/<module>.css`          | Front-End, only where that module is used |
+| `modules-json/<module>/`       | PHP `ModuleRegistration::register_module` (copied `module.json` + default attrs) |
 
-`bootstrap.php` enqueues the VB script/styles via Divi's `PackageBuildManager`
-and only *registers* the front-end `styles/bundle.css`. The module's
-`render_callback` enqueues `scripts/module.js` and `styles/bundle.css`, so the
-front-end assets load only on pages (or Theme Builder templates) that contain
-the module. WordPress 6.9+ moves styles enqueued during rendering into `<head>`
-on classic themes like Divi, so there is no flash of unstyled content. When
-you add a module, enqueue the style in its render callback too. These are only
-loaded when Divi 5 is active.
+`bootstrap.php` enqueues the VB files via Divi's `PackageBuildManager`. On the
+Front-End, each module's render callback calls `Assets::enqueue('<module>')`,
+which loads that module's own files, so a page only gets the CSS/JS of the
+modules it contains (also in Theme Builder templates). WordPress 6.9+ moves
+styles enqueued during rendering into `<head>` on classic themes like Divi, so
+there is no flash of unstyled content. `npm run dev` picks up a new module
+folder only after a restart.
 
 ## Translations
 
@@ -147,12 +165,10 @@ For a *shared* brand icon used across multiple plugins, add it to is-base-plugin
    for a custom one, see *Module icon* above.)
 3. Duplicate `modules/ExampleModule/` → `modules/<New>/`, update the namespace
    and class names, and add it in `modules/Modules.php`. Its render callback
-   enqueues `styles/bundle.css` too (see *Build* above).
-4. Only if the module needs its own Front-End script: add an entry in
-   `webpack.config.js` (e.g. `'<new>-module': './src/components/<new>/module.ts'`
-   → `scripts/<new>-module.js`) and enqueue that file in its render callback.
-   The existing `module` entry only builds the example module's script.
-5. `npm run build`.
+   calls `Assets::enqueue('<new>')` with the folder name from step 1.
+4. Delete `module.ts` if the module needs no Front-End JS. No webpack change is
+   needed: the build finds the new folder by itself.
+5. `npm run build` (restart `npm run dev` if it is running).
 
 For a parent module with child items, create both modules as above, then set
 `"childModuleName": "<namespace>/<child-module>"` in the parent's `module.json`

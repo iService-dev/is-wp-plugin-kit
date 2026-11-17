@@ -8,8 +8,8 @@
  *   1. defines the path/url constants used by the modules,
  *   2. autoloads the module PHP classes (composer optional),
  *   3. registers the module(s) with the Divi 5 dependency tree, and
- *   4. enqueues the Visual Builder assets and registers the Front-End style
- *      (enqueued by the module render callbacks, only where a module is used).
+ *   4. enqueues the Visual Builder assets. Front-End files are per module and
+ *      loaded by each module's render callback (modules/Assets.php).
  *
  * @package D5_NS_PLACEHOLDER\Divi5
  */
@@ -97,9 +97,8 @@ add_action(
 			]
 		);
 
-		// The module's own styles (module.scss → styles/bundle.css). On the
-		// front end the render callback enqueues them; the builder renders
-		// modules in JS, so they are added here.
+		// All modules' module.scss (imported by the Builder bundle → styles/bundle.css).
+		// The Builder renders modules in JS, so the render callbacks don't run here.
 		\ET\Builder\VisualBuilder\Assets\PackageBuildManager::register_package_build(
 			[
 				'name'    => 'D5_HANDLE_PLACEHOLDER-builder-bundle-style',
@@ -112,30 +111,5 @@ add_action(
 				],
 			]
 		);
-	}
-);
-
-/**
- * Register the Front-End style bundle.
- *
- * Only registered here, not enqueued: each module's render callback enqueues it,
- * so the CSS loads only on pages that contain one of this plugin's modules
- * (same as the Front-End script). WordPress (6.9+) moves styles enqueued during
- * rendering into <head> on classic themes like Divi, so there is no flash of
- * unstyled content.
- *
- * @since ??
- */
-add_action(
-	'wp_enqueue_scripts',
-	function () {
-		if (file_exists(D5_CONST_PLACEHOLDER_PATH.'styles/bundle.css')) {
-			wp_register_style(
-				'D5_HANDLE_PLACEHOLDER-bundle-style',
-				D5_CONST_PLACEHOLDER_URL.'styles/bundle.css',
-				[],
-				D5_CONST_PLACEHOLDER_VERSION
-			);
-		}
 	}
 );

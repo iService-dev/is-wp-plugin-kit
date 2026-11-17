@@ -252,8 +252,11 @@ classes of either plugin.
 - Every module is self-contained in its own folder and doesn't depend on
   other modules, except a child module on its parent (see
   `divi5/README.md`).
-- Front-end scripts and styles only load when the module is on the page:
-  the module's render callback enqueues them (see the example module).
+- Each module has its own front-end files: one entry `module.ts` (only if it
+  needs JS) and one `module.scss`, which import their helpers from the
+  module's folder. Its render callback loads them with `Assets::enqueue()`,
+  so they only load on pages that use the module (see `divi5/README.md`,
+  "Module folder").
 - **Where content is stored is a developer decision.** Divi saves module
   content inside the page. That's fine for layout and visual settings. Stop and
   ask a developer before building if the content:
