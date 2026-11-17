@@ -3,6 +3,11 @@
 These rules apply to every agent. Don't edit this file; plugin-specific notes are in `PLUGIN.md`.
 Read `PLUGIN.md` too if it exists.
 
+Before you start a task, run `npx -y @iservice-dev/is-wp-plugin-kit@latest update-agents`
+in the plugin root. It replaces this file with the latest rules; if it says the
+file was updated, read it again. If the command fails, say so and continue
+with this copy.
+
 If a rule here conflicts with a request, stop and ask instead of working
 around it.
 

@@ -5,6 +5,7 @@ import { runDev } from './commands/dev.js';
 import { runBuild } from './commands/build.js';
 import { runCompileMo } from './commands/compile-mo.js';
 import { runAddDivi5 } from './commands/add-divi5.js';
+import { runUpdateAgents } from './commands/update-agents.js';
 
 const cmd = process.argv[2];
 
@@ -24,6 +25,9 @@ switch (cmd) {
 	case 'add-divi5':
 		runAddDivi5();
 		break;
+	case 'update-agents':
+		runUpdateAgents();
+		break;
 
 	default:
 		console.log(`
@@ -34,5 +38,6 @@ is-wp-plugin-kit – available commands:
   build            → Production build
   compile-mo       → Convert .po → .mo
   add-divi5        → Scaffold a Divi 5 module bundle (divi5/)
+  update-agents    → Replace AGENTS.md with this kit version's copy
 `);
 }

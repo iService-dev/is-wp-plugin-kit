@@ -21,9 +21,12 @@ This sets up your complete plugin structure with:
   `files/AGENTS.md` here, not in the plugin), `PLUGIN.md` (plugin-specific
   notes, owned by the plugin) and `CLAUDE.md` (imports both for Claude Code)
 
-`AGENTS.md` is only copied by `init`. No command updates it in existing
-plugins yet: copy `files/AGENTS.md` over by hand. Don't re-run `init` on an
-existing plugin; it overwrites `Plugin.php`, `Config.php` and the main file.
+To get the latest `AGENTS.md` into an existing plugin, run
+`npx @iservice-dev/is-wp-plugin-kit@latest update-agents` in its root. Agents
+do this themselves before each task (the file tells them to), so you only need
+it once for plugins whose copy is older than that instruction. Don't re-run
+`init` on an existing plugin; it overwrites `Plugin.php`, `Config.php` and the
+main file.
 
 ### 2. Install Dependencies
 
@@ -90,6 +93,7 @@ Kit CLI (via `npx @iservice-dev/is-wp-plugin-kit <command>`):
 ```bash
 init               # Scaffold a new plugin
 add-divi5          # Add a Divi 5 module bundle (divi5/)
+update-agents      # Replace AGENTS.md with the kit's latest copy
 compile-mo         # Convert .po → .mo
 ```
 
