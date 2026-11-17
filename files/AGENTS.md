@@ -279,6 +279,22 @@ classes of either plugin.
   field, option or hook is wired wrongly, wire it correctly. No "use A,
   otherwise B" logic that hides the problem.
 - No magic numbers: name them as constants or settings.
+- **HTML formatting:** every element and every text starts on its own line,
+  indented one level deeper than its parent. Attributes go on their own
+  lines when there are more than two. Exceptions: `<textarea>` and `<pre>`,
+  where whitespace is part of the content.
+
+  ```php
+  <label for="is_seo_keyphrase">
+  	<?php echo esc_html__('Focus keyphrase', $p); ?>
+  </label>
+  ```
+
+- **No CSS in HTML:** no `style` attributes and no `<style>` blocks, in
+  PHP templates and in TypeScript (`element.style`) alike. Styles go into
+  SCSS and are switched with classes. Only a value that comes from a
+  setting may be passed as a CSS custom property
+  (`style="--is-accent: …"`), validated as described in section 5.
 - **No comments by default.** Use clear names and small functions instead.
   Write a comment only if it is really necessary, i.e. it explains a reason
   the code can't show (a WordPress or plugin quirk, a workaround with a
