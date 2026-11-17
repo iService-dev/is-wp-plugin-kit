@@ -256,14 +256,10 @@ export async function runInit() {
 		fs.mkdirSync(workflowDir, { recursive: true });
 	}
 
-	const deployYmlTemplate = fs.readFileSync(
+	fs.copyFileSync(
 		path.join(__dirname, '../../files/deploy.yml'),
-		'utf-8'
+		path.join(workflowDir, 'deploy.yml')
 	);
-
-	const deployYmlContent = deployYmlTemplate.replace(/\[plugin-placehoder\]/g, pluginSlug);
-
-	fs.writeFileSync(path.join(workflowDir, 'deploy.yml'), deployYmlContent);
 	console.log('✓ Created .github/workflows/deploy.yml');
 
 	fs.copyFileSync(
