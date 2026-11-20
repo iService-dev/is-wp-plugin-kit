@@ -94,6 +94,30 @@ styles enqueued during rendering into `<head>` on classic themes like Divi, so
 there is no flash of unstyled content. `npm run dev` picks up a new module
 folder only after a restart.
 
+## Builder preview
+
+The Visual Builder loads only `bundle.js`, `bundle.css` and `vb-bundle.css`. A
+module's `module.ts` never runs there, so its preview in the Builder is static
+(no autoscroll, sliders, …). That's fine: don't write code that tries to start
+the front-end behaviour inside the Builder. On the front end, `module.ts` starts
+each instance once when the page has loaded; no `MutationObserver` or re-init
+events.
+
+## Icons in a module
+
+Icons are SVG files in the plugin's `assets/src/images/icons/` (see `AGENTS.md`,
+section 4).
+
+- **Builder:** `import arrowUp from '../../../../assets/src/images/icons/arrow-up.svg';`
+  gives the markup as a string; render it with
+  `<span aria-hidden="true" dangerouslySetInnerHTML={{ __html: arrowUp }} />`.
+  This is safe because the file is part of the plugin, never user input.
+- **Front end (PHP):** read the built copy from
+  `assets/dist/css/images/icons/<name>.svg` and print it inline in the same
+  wrapper.
+- A choice of icons is a select field whose options are a fixed list of file
+  names; never an upload or a free text field.
+
 ## Translations
 
 Divi does **not** run a third-party module's `module.json` strings through

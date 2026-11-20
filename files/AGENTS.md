@@ -113,23 +113,24 @@ and ask a developer whether it belongs there.
   For user-specific assets, check a capability (`current_user_can()`), not
   `is_user_logged_in()`.
 - No external CDNs, fonts or scripts. Everything ships with the plugin.
-- **Icons come from icon fonts only.** No Dashicons, Font Awesome, emoji or
-  SVG/PNG icons in any other form. The only exception is where WordPress
-  itself requires a Dashicon, e.g. the `add_menu_page()` icon.
-  - **Base first:** for general functions (open/close, up/down, edit,
-    delete, add, settings, …) always use the `iservice` font in the base
-    plugin, so every plugin looks the same. The icons and their codes are
-    in `is-base-plugin/assets/src/fonts/selection.json`. Use them in SCSS
-    with `font-family: iservice` and `content: '\e9ae'`, and the base
-    classes `is-icon` / `is-icon-btn` for the tile or button around them.
-  - If a general icon is missing there, don't build a substitute. Stop and
-    ask a developer to add it to the `iservice` font, and name the icon and
-    where it is needed in the pull request.
-  - **Plugin-specific icons** that only make sense for this plugin go into
-    the plugin's own icon font in `assets/src/fonts/` (IcoMoon, keep its
-    `.json` so it can be extended), named after the plugin. Example:
-    `legumehub` in `is-legumehub-plugin`. Never copy general icons from
-    `iservice` into it.
+- **Icons are SVG files.** No icon fonts in new code, no Dashicons, Font
+  Awesome, emoji or PNG icons. The only exception is where WordPress itself
+  requires a Dashicon, e.g. the `add_menu_page()` icon.
+  - One icon per file in `assets/src/images/icons/<name>.svg`; the build
+    copies them to `assets/dist/css/images/icons/`. Draw them on a
+    `viewBox="0 0 24 24"` in one colour with `fill="currentColor"` (or
+    `stroke="currentColor"`) and no `width`/`height`, so they take the text
+    colour and size.
+  - In HTML, print the file's SVG inline with `aria-hidden="true"` (the
+    button or link around it carries the accessible name). In CSS (e.g.
+    `::before`), use it as a `mask-image` with `background-color: currentColor`.
+  - General icons (arrows, close, edit, delete, add, …) must look the same
+    in every plugin. If the base plugin has one, use it; never copy it. If it
+    doesn't, add it to this plugin and name it in the pull request so a
+    developer can move it to the base plugin.
+  - A module may let the editor choose from a fixed list of icons, but never
+    upload or paste their own SVG.
+  - Existing code that uses the `iservice` icon font may stay as it is.
 - No placeholder or test media in the repo.
   Images in `assets/src/images/` must be optimised; prefer SVG for icons
   and graphics and WebP for photos, and keep them under 200 KB unless
@@ -261,10 +262,17 @@ classes of either plugin.
 
 - Never remove focus outlines without a visible replacement (`:focus-visible`).
 - Respect user preferences like `prefers-reduced-motion`.
-- Anything that moves or loops on its own needs a pause/stop control.
+- Anything that moves or loops on its own needs a visible pause/stop
+  button. Hovering may pause it for a moment; a click, drag or keyboard use
+  stops it until the user presses play again.
 - Interactive elements are real `<button>`/`<a>` elements, reachable and
   usable with the keyboard, with accessible names.
-- Images need meaningful `alt` text (or `alt=""` if decorative).
+- Images need meaningful `alt` text (or `alt=""` if decorative). Never use
+  placeholder text such as "preview" or "image" as a default.
+- Choose images from the media library by ID and output them with
+  `wp_get_attachment_image()`, so they get `srcset`, lazy loading, width and
+  height, and the media library's `alt` text. Use the `alt` set in the
+  module or field first, then the media library's.
 
 ## 8. Divi modules
 
@@ -281,6 +289,14 @@ classes of either plugin.
   module's folder. Its render callback loads them with `Assets::enqueue()`,
   so they only load on pages that use the module (see `divi5/README.md`,
   "Module folder").
+- **Use Divi's own options.** Borders, spacing, colours, fonts, sizes and
+  backgrounds come from Divi's Design tab and style components. Don't add an
+  own field that does the same as a Divi option.
+- **Show only options that have an effect.** If a setting does nothing in the
+  chosen mode, hide it in the Builder and leave its output (buttons, markup,
+  scripts) out of the page.
+- The Builder preview may be static: the module's front-end JS doesn't run
+  there (see `divi5/README.md`).
 - **Where content is stored is a developer decision.** Divi saves module
   content inside the page. That's fine for layout and visual settings. Stop and
   ask a developer before building if the content:
@@ -295,7 +311,7 @@ classes of either plugin.
 - Follow the WordPress coding standards. The build lints TypeScript
   (oxlint) and SCSS (stylelint) in `assets/src/` and fixes some SCSS issues
   itself (review those changes); `divi5/` is not linted. Fix warnings, don't
-  disable rules.
+  disable rules. Your change adds no new warnings to the build output.
 - **All checks in the pull request must be green before review.** If a
   check fails, fix the cause; never disable, skip or weaken a check. Still
   run `php -l` on changed PHP files before pushing.
@@ -319,9 +335,16 @@ classes of either plugin.
 
 - **No CSS in HTML:** no `style` attributes and no `<style>` blocks, in
   PHP templates and in TypeScript (`element.style`) alike. Styles go into
-  SCSS and are switched with classes. Only a value that comes from a
-  setting may be passed as a CSS custom property
-  (`style="--is-accent: …"`), validated as described in section 5.
+  SCSS and are switched with classes. Only two things may set a CSS custom
+  property:
+  - a value that comes from a setting (`style="--is-accent: …"`), validated
+    as described in section 5;
+  - JS, for a value that changes while the page runs (scroll position,
+    progress), e.g. `el.style.setProperty('--is-scroll-y', …)`. Never colours,
+    sizes or other design values; those stay in SCSS.
+- **CSS before JS.** If the browser can do it with CSS (transitions,
+  scroll-driven animations with `animation-timeline`, `position: sticky`,
+  `:has()`), don't write JS for it.
 - **No comments by default.** Use clear names and small functions instead.
   Write a comment only if it is really necessary, i.e. it explains a reason
   the code can't show (a WordPress or plugin quirk, a workaround with a
@@ -338,6 +361,26 @@ npm run build      # production build: lint, Vite, .mo, divi5/
 
 `npm run build` must pass without errors before you open a pull request.
 
+### Before you open a pull request
+
+1. Review your own diff against these rules and fix what you find.
+2. Test it in the browser on a page that uses it: no console errors, works
+   with the keyboard, with `prefers-reduced-motion` and on a phone-sized
+   screen. For a Divi module, put it on one page twice and try each mode or
+   option that changes behaviour.
+3. Write in the pull request what you tested and how.
+
+### After review feedback
+
+Don't only change the commented line. Check what else your fix affects,
+then test the whole feature again as above, not just the fix.
+
+### Testing on a local site
+
+Before you change a setting or option for a test, note its value and set it
+back afterwards; never delete it. Delete test posts and pages only by the
+IDs you created, never with a query that matches them.
+
 ## 11. Git workflow
 
 - **Never commit to `main` or `dev` directly.** Start each new feature or
@@ -347,7 +390,7 @@ npm run build      # production build: lint, Vite, .mo, divi5/
   Every merge into `main` creates a release.
 - Never commit `node_modules/`, `vendor/`, `assets/dist/`, `languages/*.mo`,
   build output or editor files.
-- Every pull request describes what changed and, ideally, how it was tested.
+- Every pull request describes what changed and how it was tested.
 
 ## 12. When to stop and ask a developer
 
