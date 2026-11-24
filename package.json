@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@types/jquery": "^3.5.34",
-    "@types/node": "^25.9.1",
+    "@types/node": "^26.6.6",
     "@types/sizzle": "^2.3.0",
     "autoprefixer": "^10.4.21",
     "chokidar-cli": "^3.0.0",
