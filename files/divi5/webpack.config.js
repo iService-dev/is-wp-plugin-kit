@@ -91,12 +91,6 @@ module.exports = {
         exclude: /node_modules/,
       },
 
-      // `import icon from '…/icon.svg'` gives the file's markup as a string.
-      {
-        test: /\.svg$/,
-        type: 'asset/source',
-      },
-
       // Handle `.css` and `.scss` files.
       {
         test: /\.s?css$/i,
