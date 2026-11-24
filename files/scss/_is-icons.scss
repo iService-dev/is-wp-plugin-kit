@@ -1,0 +1,40 @@
+// iService icon workflow (AGENTS.md §4). Provided by the kit, use it with:
+//
+//   @use 'is-icons' as *;
+//   .my-button::before { @include icon(edit); }
+//
+// Lookup, same as the PHP getter `$assets->icon()`:
+//   1. this plugin's assets/src/images/icons/<name>.svg (checked at build time)
+//   2. the base plugin's shared icon, from the CSS variable --is-icon-<name>
+//      (base plugin's icons.css, loaded on every admin page; on the frontend call
+//      `$assets->enqueue_shared_icons()`)
+//   3. nothing: the transparent fallback keeps a missing icon invisible
+//      instead of a solid square.
+
+// The image for one icon, for `mask-image` (or anywhere an <image> is valid).
+@function icon-image($name) {
+	@if is-own-icon-exists($name) {
+		@return url('/assets/src/images/icons/#{$name}.svg');
+	}
+
+	@return var(--is-icon-#{$name}, linear-gradient(transparent, transparent));
+}
+
+// Draws the icon in the current text colour. Use it on a pseudo-element or an empty
+// element with aria-hidden. `$size: null` leaves width/height to the surrounding rules.
+@mixin icon($name, $size: 1em) {
+	background-color: currentColor;
+	content: '';
+	display: inline-block;
+	forced-color-adjust: none;
+	mask-image: icon-image($name);
+	mask-position: center;
+	mask-repeat: no-repeat;
+	mask-size: contain;
+	vertical-align: -.125em;
+
+	@if $size {
+		height: $size;
+		width: $size;
+	}
+}

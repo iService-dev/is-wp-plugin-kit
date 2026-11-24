@@ -1,8 +1,11 @@
 import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import fg from 'fast-glob';
+import { runCheckIcons } from './check-icons.js';
 
 export async function runBuild() {
+	runCheckIcons();
+
 	const tsFiles = fg.sync('assets/src/ts/**/*.ts');
 	if (tsFiles.length > 0) {
 		execSync('oxlint assets/src/ts', { stdio: 'inherit' });

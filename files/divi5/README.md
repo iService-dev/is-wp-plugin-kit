@@ -94,6 +94,51 @@ styles enqueued during rendering into `<head>` on classic themes like Divi, so
 there is no flash of unstyled content. `npm run dev` picks up a new module
 folder only after a restart.
 
+## Builder preview
+
+The Visual Builder loads only `bundle.js`, `bundle.css` and `vb-bundle.css`. A
+module's `module.ts` never runs there, so its preview in the Builder is static
+(no autoscroll, sliders, …). That's fine: don't write code that tries to start
+the front-end behaviour inside the Builder. On the front end, `module.ts` starts
+each instance once when the page has loaded; no `MutationObserver` or re-init
+events.
+
+## Icons in a module
+
+Icons are SVG files in the plugin's `assets/src/images/icons/` or the base
+plugin's shared icons (see `AGENTS.md`, section 4). Always get them through the
+plugin's `Asset_Manager_Service` (`$assets` below), so the Builder and the front
+end show the same icon: this plugin's own first, then the shared one.
+
+- **Builder:** pass the module's icons to the Builder bundle with
+  `data_app_window` in `bootstrap.php`. Divi prints it with
+  `wp_localize_script()` as `window.<PascalCase name>Data`:
+
+  ```php
+  'script' => [
+  	'src'             => D5_CONST_PLACEHOLDER_URL.'scripts/bundle.js',
+  	// …
+  	'data_app_window' => [
+  		'icons' => [
+  			'arrow-left'  => $assets->icon('arrow-left'),
+  			'arrow-right' => $assets->icon('arrow-right'),
+  		],
+  	],
+  ],
+  ```
+
+  Render one with
+  `<span aria-hidden="true" dangerouslySetInnerHTML={{ __html: icons[name] ?? '' }} />`.
+  This is safe because the markup comes from icon files in the plugins, never
+  from user input. Don't import SVG files into the bundle.
+- **Front end (PHP):** `echo $assets->icon('<name>');` in the render callback.
+  It prints the SVG inline with `aria-hidden="true"`. Never read an SVG file
+  yourself.
+- The `icon()` SCSS mixin isn't available in a module's SCSS (it's built with
+  webpack, not Vite); use the inline SVG instead.
+- A choice of icons is a select field whose options are a fixed list of icon
+  names; never an upload or a free text field.
+
 ## Translations
 
 Divi does **not** run a third-party module's `module.json` strings through
