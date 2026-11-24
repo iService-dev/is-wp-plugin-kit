@@ -6,6 +6,7 @@ import { runBuild } from './commands/build.js';
 import { runCompileMo } from './commands/compile-mo.js';
 import { runAddDivi5 } from './commands/add-divi5.js';
 import { runUpdateAgents } from './commands/update-agents.js';
+import { runCheckIcons } from './commands/check-icons.js';
 
 const cmd = process.argv[2];
 
@@ -28,6 +29,9 @@ switch (cmd) {
 	case 'update-agents':
 		runUpdateAgents();
 		break;
+	case 'check-icons':
+		runCheckIcons();
+		break;
 
 	default:
 		console.log(`
@@ -39,5 +43,6 @@ is-wp-plugin-kit – available commands:
   compile-mo       → Convert .po → .mo
   add-divi5        → Scaffold a Divi 5 module bundle (divi5/)
   update-agents    → Replace AGENTS.md with this kit version's copy
+  check-icons      → Check SVG icons against the icon rules
 `);
 }

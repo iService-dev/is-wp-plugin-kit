@@ -218,6 +218,7 @@ export async function runInit() {
 		'assets/src/scss/components',
 		'assets/src/fonts',
 		'assets/src/images',
+		'assets/src/images/icons',
 		'assets/src/l10n',
 		'includes/lib/Admin',
 		'includes/lib/Core',

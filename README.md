@@ -97,6 +97,7 @@ init               # Scaffold a new plugin
 add-divi5          # Add a Divi 5 module bundle (divi5/)
 update-agents      # Replace AGENTS.md with the kit's latest copy
 compile-mo         # Convert .po → .mo
+check-icons        # Check SVG icons against the icon rules (also runs in build)
 ```
 
 ## What's Included
@@ -106,6 +107,7 @@ compile-mo         # Convert .po → .mo
 - **SCSS**: Modern CSS workflow with PostCSS and Autoprefixer
 - **Linting**: OXLint for JS/TS, Stylelint for CSS/SCSS
 - **i18n**: Automatic `.po` to `.mo` compilation
+- **SVG icons**: `@use 'is-icons'` + `@include icon(name)` in SCSS. Looks in the plugin's `assets/src/images/icons/` first, then falls back to the base plugin's shared icons (`--is-icon-<name>` from its `icons.css`). Icons are checked on build (see AGENTS.md §4)
 - **File Watchers**: Auto-lint and compile on file changes
 - **Divi 5 (optional)**: An auto-detected `divi5/` module workspace (own webpack build) is built by `npm run build`, watched by `npm run dev`, and packaged into the release zip. Plugins without a `divi5/` folder are unaffected.
 

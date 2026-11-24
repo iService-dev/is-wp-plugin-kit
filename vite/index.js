@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { writeFileSync } from "node:fs";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+import { iconWorkflow, mergeScssOptions } from "./icons.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -75,6 +76,11 @@ export function wpPluginKitVite(userOptions = {}) {
     })
     .map(flattenTarget);
 
+  const icons = iconWorkflow(cwd);
+  // `css` is merged below instead of being replaced by the spread, so a plugin's own CSS
+  // options keep the icon workflow working.
+  const { css: userCss = {}, ...restUserOptions } = userOptions;
+
   const inputs = makeInputs();
   const scssEntries = new Set(
     Object.keys(inputs).filter((key) => key.startsWith("css/")).map((key) => key.slice(4))
@@ -138,7 +144,15 @@ export function wpPluginKitVite(userOptions = {}) {
       },
     },
 
-    css: { postcss: "./postcss.config.cjs" },
+    css: {
+      postcss: "./postcss.config.cjs",
+      ...userCss,
+      preprocessorOptions: {
+        ...userCss.preprocessorOptions,
+        // Icon workflow: `@use "is-icons"` + Sass functions for own/shared SVG icons (see vite/icons.js).
+        scss: mergeScssOptions(icons.sassOptions, userCss.preprocessorOptions?.scss),
+      },
+    },
 
     plugins: [
       {
@@ -151,9 +165,10 @@ export function wpPluginKitVite(userOptions = {}) {
           );
         }
       },
-      viteStaticCopy({ targets: validTargets })
+      viteStaticCopy({ targets: validTargets }),
+      icons.plugin,
     ],
 
-    ...userOptions,
+    ...restUserOptions,
   });
 }
